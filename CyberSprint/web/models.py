@@ -44,7 +44,7 @@ class Participant(models.Model):
     password = models.CharField(max_length=128)  # You may use Django's `make_password` to hash
     linkedin_url = models.URLField(null=True, blank=True)
     github_url = models.URLField(null=True, blank=True)
-    role = models.CharField(max_length=20, choices=[("Leader", "Leader"), ("Crew", "Crew")])
+    role = models.CharField(null=True, max_length=20, choices=[("Leader", "Leader"), ("Crew", "Crew")])
 
     def __str__(self):
         return f"{self.participant_id} - {self.first_name} {self.last_name}"
@@ -63,7 +63,7 @@ def generate_custom_id(prefix, model, field_name):
 @receiver(pre_save, sender=Participant)
 def set_participant_id(sender, instance, **kwargs):
     if not instance.participant_id:
-        instance.participant_id = generate_custom_id('CCCS', Participant, 'participant_id')
+        instance.participant_id = generate_custom_id('CCCM', Participant, 'participant_id')
 
 @receiver(pre_save, sender=Participant)
 def hash_password(sender, instance, **kwargs):
@@ -75,7 +75,7 @@ def hash_password(sender, instance, **kwargs):
 @receiver(pre_save, sender=Team)
 def set_team_id_and_code(sender, instance, **kwargs):
     if not instance.team_id:
-        instance.team_id = generate_custom_id('CCCST', Team, 'team_id')
+        instance.team_id = generate_custom_id('CCCMT', Team, 'team_id')
     if not instance.team_code and instance.team_leader:
         leader = instance.team_leader
         leader_prefix = leader.first_name[:3].upper()

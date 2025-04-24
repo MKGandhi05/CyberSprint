@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from .models import Participant
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 from django.core.mail import send_mail
 from django.conf import settings
 import json
@@ -16,7 +16,209 @@ def index(request):
     return render(request, 'index.html')
 
 def login(request):
+    if request.method == 'POST':
+        # Check which login method was chosen
+        login_method = request.POST.get('login_method', 'credentials')
+        
+        if login_method == 'credentials':
+            # Login with credentials (email/roll_no + password)
+            return credentials_login(request)
+        else:
+            # Login with OTP
+            action = request.POST.get('action', '')
+            
+            if action == 'send_otp':
+                # Send OTP to user's email
+                return send_login_otp_request(request)
+            elif action == 'verify_otp':
+                # Verify OTP and login
+                return verify_login_otp(request)
+            elif action == 'resend_otp':
+                # Resend OTP
+                return resend_login_otp(request)
+    
+    # If GET request, just render the login form
     return render(request, 'login.html')
+
+def credentials_login(request):
+    """Login using credentials (email/roll_no + password)"""
+    # Get form data
+    identifier = request.POST.get('identifier', '')  # Could be email or roll_no
+    password = request.POST.get('password', '')
+    
+    try:
+        # Check if identifier is an email or roll_no
+        if '@' in identifier:
+            # Login with email
+            participant = Participant.objects.get(mail=identifier)
+        else:
+            # Login with roll_no
+            participant = Participant.objects.get(roll_no=identifier)
+        
+        # Check password
+        if check_password(password, participant.password):
+            # Login successful, create session
+            create_user_session(request, participant)
+            
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Login successful',
+                'redirect': '/dashboard/'
+            })
+        else:
+            # Invalid password
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Invalid credentials. Please try again.'
+            })
+    
+    except Participant.DoesNotExist:
+        # User not found
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Invalid credentials. Please try again.'
+        })
+
+def send_login_otp_request(request):
+    """Send OTP for login"""
+    # Get email
+    email = request.POST.get('email', '')
+    
+    # Validate email existence
+    try:
+        participant = Participant.objects.get(mail=email)
+        
+        # Generate OTP
+        otp = generate_otp()
+        
+        # Store OTP and user info in session
+        request.session['login_otp'] = otp
+        request.session['login_email'] = email
+        
+        # Send OTP via email
+        send_login_otp(request, email, otp)
+        
+        return JsonResponse({
+            'status': 'success',
+            'message': 'OTP sent to your email'
+        })
+    
+    except Participant.DoesNotExist:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Email not registered. Please check your email or register.'
+        })
+
+def send_login_otp(request, email, otp):
+    """Send login OTP email"""
+    # Get the site URL for static files in email template
+    site_url = request.build_absolute_uri('/').rstrip('/')
+    
+    # Render HTML message
+    html_message = render_to_string('login_otp_email.html', {
+        'otp': otp,
+        'site_url': site_url,
+    })
+    
+    # Create plain text version
+    plain_message = strip_tags(html_message)
+    
+    # Send the email
+    send_mail(
+        'Your CodeMania Login Verification Code',
+        plain_message,
+        settings.DEFAULT_FROM_EMAIL,
+        [email],
+        html_message=html_message,
+        fail_silently=False,
+    )
+
+def verify_login_otp(request):
+    """Verify login OTP"""
+    entered_otp = request.POST.get('otp', '')
+    stored_otp = request.session.get('login_otp', '')
+    email = request.session.get('login_email', '')
+    
+    if not stored_otp or not email:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Session expired. Please request a new OTP.'
+        })
+    
+    if entered_otp == stored_otp:
+        try:
+            # Get the user
+            participant = Participant.objects.get(mail=email)
+            
+            # Create user session
+            create_user_session(request, participant)
+            
+            # Clean up OTP session data
+            for key in ['login_otp', 'login_email']:
+                if key in request.session:
+                    del request.session[key]
+            
+            # Return success
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Login successful',
+                'redirect': '/dashboard/'
+            })
+        
+        except Participant.DoesNotExist:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'User not found. Please try again.'
+            })
+    else:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Invalid OTP. Please try again.'
+        })
+
+def create_user_session(request, participant):
+    """Create session for logged in user"""
+    request.session['user_id'] = participant.participant_id
+    request.session['user_name'] = f"{participant.first_name} {participant.last_name}"
+    request.session['user_email'] = participant.mail
+    request.session['user_role'] = participant.role
+    request.session['is_authenticated'] = True
+
+def resend_login_otp(request):
+    """Resend login OTP if needed"""
+    if request.method == 'POST':
+        email = request.session.get('login_email', '')
+        
+        if not email:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Session expired. Please try again.'
+            })
+        
+        # Generate new OTP
+        otp = generate_otp()
+        request.session['login_otp'] = otp
+        
+        # Send OTP via email
+        send_login_otp(request, email, otp)
+        
+        return JsonResponse({
+            'status': 'success',
+            'message': 'OTP resent to your email'
+        })
+    
+    return JsonResponse({
+        'status': 'error',
+        'message': 'Invalid request'
+    })
+
+def logout(request):
+    """Log out user by clearing session data"""
+    for key in ['user_id', 'user_name', 'user_email', 'user_role', 'is_authenticated']:
+        if key in request.session:
+            del request.session[key]
+    
+    return redirect('login')
 
 def register(request):
     if request.method == 'POST':
@@ -61,8 +263,7 @@ def register(request):
                 mail=email,
                 password=make_password(password),  # Hash the password
                 linkedin_url=linkedin_url,
-                github_url=github_url,
-                role="Crew"  # Default role is Crew
+                github_url=github_url
             )
             participant.save()
             

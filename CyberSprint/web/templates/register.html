@@ -299,7 +299,7 @@
                                     <!-- Navigation Buttons -->
                                     <div class="d-flex justify-content-between mt-3">
                                         <button type="button" id="backToStep4Btn" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</button>
-                                        <button type="button" id="goToStep6Btn" class="btn btn-primary">Get OTP <i class="fas fa-arrow-right"></i></button>
+                                        <button type="button" id="goToStep6Btn" class="btn btn-primary">Get OTP <i class="fas fa-arrow-right"></i><span class="spinner-border spinner-border-sm ms-1 d-none" id="otpSpinner" role="status" aria-hidden="true"></span></button>
                                     </div>
                                 </div>
                                 
@@ -461,6 +461,9 @@
                 if (validateStep5()) {
                     // Set email in the OTP verification section
                     $('#displayEmail').text($('#email').val());
+                    // Show spinner and disable button
+                    $('#otpSpinner').removeClass('d-none');
+                    $(this).prop('disabled', true);
                     
                     // Send OTP to the server
                     sendOtpToServer();
@@ -836,13 +839,21 @@
                     },
                     success: function(response) {
                         if (response.status === 'success') {
+                            // Now move to step 6 after successful OTP sending
+                            moveToStep(6);
                             showToast('An OTP has been sent to ' + email, 'success');
                             startOtpTimer();
                         } else {
+                            // Hide spinner and re-enable button on error
+                            $('#otpSpinner').addClass('d-none');
+                            $('#goToStep6Btn').prop('disabled', false);
                             showToast(response.message || 'Failed to send OTP. Please try again.', 'error');
                         }
                     },
                     error: function() {
+                        // Hide spinner and re-enable button on error
+                        $('#otpSpinner').addClass('d-none');
+                        $('#goToStep6Btn').prop('disabled', false);
                         showToast('Failed to send OTP. Please try again.', 'error');
                     }
                 });
