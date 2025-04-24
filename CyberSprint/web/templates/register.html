@@ -172,6 +172,10 @@
         #step2 {
             font-size: 0.8rem; /* Smaller font size for all elements in step 2 */
         }
+
+        #step5 {
+            font-size: 0.8rem; /* Smaller font size for all elements in step 5 */
+        }
         
         #step2 .mb-2 {
             margin-bottom: 0.7rem !important; /* Reduce spacing between fields */
@@ -216,6 +220,50 @@
             font-size: 14px;
             margin-top: 5px;
             display: none;
+        }
+        
+        /* Password strength meter styles */
+        .password-strength {
+            margin-top: 10px;
+        }
+        
+        .strength-meter {
+            height: 4px;
+            background-color: #ddd;
+            margin: 5px 0;
+            border-radius: 2px;
+        }
+        
+        .strength-meter-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s ease, background-color 0.3s ease;
+            width: 0%;
+        }
+        
+        .strength-meter-fill.weak {
+            background-color: #f00;
+            width: 25%;
+        }
+        
+        .strength-meter-fill.medium {
+            background-color: #ff8c00;
+            width: 50%;
+        }
+        
+        .strength-meter-fill.good {
+            background-color: #ffcc00;
+            width: 75%;
+        }
+        
+        .strength-meter-fill.strong {
+            background-color: #0f0;
+            width: 100%;
+        }
+        
+        .strength-text {
+            font-size: 12px;
+            color: #888;
         }
     </style>
 
@@ -322,11 +370,136 @@
                                             <input type="tel" class="form-control" id="mobile" name="mobile" required pattern="[0-9]{10}" maxlength="10" placeholder="10-digit number">
                                         </div>
                                         <div id="mobileError" class="email-error">Please enter a valid 10-digit mobile number.</div>
-                                    </div>   
+                                    </div>
+                                    
                                     <!-- Navigation Buttons -->
                                     <div class="d-flex justify-content-between mt-3">
                                         <button type="button" id="backToStep1Btn" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</button>
                                         <button type="button" id="goToStep3Btn" class="btn btn-primary">Next <i class="fas fa-arrow-right"></i></button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Step 3: Academic Information -->
+                                <div id="step3" class="registration-step">
+                                    <h5 class="text-center mb-3">Academic Information</h5>
+                                    
+                                    <!-- Roll Number -->
+                                    <div class="mb-2">
+                                        <label for="rollNo" class="form-label">Roll Number</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                            <input type="text" class="form-control" id="rollNo" name="rollNo" required placeholder="Format: 22d41a62h6">
+                                        </div>
+                                        <div id="rollNoError" class="email-error">Roll number must follow the correct format (e.g., 22d41a62h6)</div>
+                                    </div>
+                                    
+                                    <!-- Year -->
+                                    <div class="mb-2">
+                                        <label for="year" class="form-label">Year</label>
+                                        <select class="form-select" id="year" name="year" required>
+                                            <option value="" selected disabled>Select Year</option>
+                                            <option value="1">1st Year</option>
+                                            <option value="2">2nd Year</option>
+                                            <option value="3">3rd Year</option>
+                                            <option value="4">4th Year</option>
+                                            <option value="5">5th Year</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Branch -->
+                                    <div class="mb-2">
+                                        <label for="branch" class="form-label">Branch</label>
+                                        <select class="form-select" id="branch" name="branch" required>
+                                            <option value="" selected disabled>Select Branch</option>
+                                            <option value="CSE">Computer Science Engineering</option>
+                                            <option value="ECE">Electronics & Communication Engineering</option>
+                                            <option value="EEE">Electrical & Electronics Engineering</option>
+                                            <option value="MECH">Mechanical Engineering</option>
+                                            <option value="CIVIL">Civil Engineering</option>
+                                            <option value="IT">Information Technology</option>
+                                            <option value="OTHER">Other</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Navigation Buttons -->
+                                    <div class="d-flex justify-content-between mt-3">
+                                        <button type="button" id="backToStep2Btn" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</button>
+                                        <button type="button" id="goToStep4Btn" class="btn btn-primary">Next <i class="fas fa-arrow-right"></i></button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Step 4: Social Media Profiles -->
+                                <div id="step4" class="registration-step">
+                                    <h5 class="text-center mb-3">Social Media Profiles</h5>
+                                    
+                                    <!-- GitHub URL -->
+                                    <div class="mb-2">
+                                        <label for="githubUrl" class="form-label">GitHub URL</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fab fa-github"></i></span>
+                                            <input type="url" class="form-control" id="githubUrl" name="githubUrl" required placeholder="https://github.com/username">
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- LinkedIn URL -->
+                                    <div class="mb-2">
+                                        <label for="linkedinUrl" class="form-label">LinkedIn URL</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fab fa-linkedin"></i></span>
+                                            <input type="url" class="form-control" id="linkedinUrl" name="linkedinUrl" required placeholder="https://www.linkedin.com/in/username">
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Navigation Buttons -->
+                                    <div class="d-flex justify-content-between mt-3">
+                                        <button type="button" id="backToStep3Btn" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</button>
+                                        <button type="button" id="goToStep5Btn" class="btn btn-primary">Next <i class="fas fa-arrow-right"></i></button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Step 5: Set Password -->
+                                <div id="step5" class="registration-step">
+                                    <h5 class="text-center mb-3">Set Password</h5>
+                                    
+                                    <!-- Password -->
+                                    <div class="mb-2">
+                                        <label for="password" class="form-label">Password</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                            <input type="password" class="form-control" id="password" name="password" required>
+                                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Confirm Password -->
+                                    <div class="mb-2">
+                                        <label for="confirmPassword" class="form-label">Confirm Password</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                                            <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Password Strength Indicator -->
+                                    <div class="mb-3">
+                                        <div class="password-strength">
+                                            <div class="strength-meter">
+                                                <div class="strength-meter-fill" id="strengthMeter"></div>
+                                            </div>
+                                            <span id="strengthText" class="strength-text">Password strength</span>
+                                        </div>
+                                    </div>
+                                    <small class="form-text text-white">Password must be at least 8 characters long and include a mix of letters, numbers, and special characters.</small>
+
+                                    <!-- Navigation Buttons -->
+                                    <div class="d-flex justify-content-between mt-3">
+                                        <button type="button" id="backToStep4Btn" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</button>
+                                        <button type="button" id="goToStep6Btn" class="btn btn-primary">Next <i class="fas fa-arrow-right"></i></button>
                                     </div>
                                 </div>
                                 
@@ -412,8 +585,47 @@
             $('#goToStep3Btn').click(function() {
                 // Validate Step 2 fields
                 if (validateStep2()) {
-                    // Move to step 3 (will be implemented later)
-                    alert("Step 2 validation successful! Step 3 will be implemented soon.");
+                    // Move to step 3
+                    moveToStep(3);
+                }
+            });
+            
+            // Step 3 Navigation
+            $('#backToStep2Btn').click(function() {
+                moveToStep(2);
+            });
+            
+            $('#goToStep4Btn').click(function() {
+                // Validate Step 3 fields
+                if (validateStep3()) {
+                    // Move to step 4
+                    moveToStep(4);
+                }
+            });
+            
+            // Step 4 Navigation
+            $('#backToStep3Btn').click(function() {
+                moveToStep(3);
+            });
+            
+            $('#goToStep5Btn').click(function() {
+                // Validate Step 4 fields
+                if (validateStep4()) {
+                    // Move to step 5
+                    moveToStep(5);
+                }
+            });
+            
+            // Step 5 Navigation
+            $('#backToStep4Btn').click(function() {
+                moveToStep(4);
+            });
+            
+            $('#goToStep6Btn').click(function() {
+                // Validate Step 5 fields
+                if (validateStep5()) {
+                    // Move to step 6 (will be implemented later)
+                    alert("Step 5 validation successful! Step 6 will be implemented soon.");
                 }
             });
             
@@ -455,6 +667,95 @@
                 return isValid;
             }
             
+            // Function to validate Step 3 fields
+            function validateStep3() {
+                let isValid = true;
+                
+                // Reset all validation styling
+                $('#rollNo, #year, #branch').removeClass('is-invalid');
+                
+                // Roll Number validation - with updated regex
+                // Format: 2 digits + 'd41' + either '1' or '5' + 2 digits + 2 alphanumeric chars
+                const rollNo = $('#rollNo').val().trim();
+                const rollNoRegex = /^\d{2}[Dd]4[15][Aa]\d{2}[a-zA-Z0-9]{2}$/;
+                
+                if (!rollNo || !rollNoRegex.test(rollNo)) {
+                    $('#rollNo').addClass('is-invalid');
+                    $('#rollNoError').show();
+                    isValid = false;
+                } else {
+                    $('#rollNoError').hide();
+                }
+                
+                // Year validation
+                if (!$('#year').val()) {
+                    $('#year').addClass('is-invalid');
+                    isValid = false;
+                }
+                
+                // Branch validation
+                if (!$('#branch').val()) {
+                    $('#branch').addClass('is-invalid');
+                    isValid = false;
+                }
+                
+                return isValid;
+            }
+            
+            // Function to validate Step 4 fields
+            function validateStep4() {
+                let isValid = true;
+                
+                // Reset all validation styling
+                $('#githubUrl, #linkedinUrl').removeClass('is-invalid');
+                
+                // GitHub URL validation
+                const githubUrl = $('#githubUrl').val().trim();
+                const githubRegex = /^https?:\/\/(www\.)?github\.com\/[a-zA-Z0-9_-]+\/?$/;
+                
+                if (!githubUrl || !githubRegex.test(githubUrl)) {
+                    $('#githubUrl').addClass('is-invalid');
+                    isValid = false;
+                }
+                
+                // LinkedIn URL validation
+                const linkedinUrl = $('#linkedinUrl').val().trim();
+                const linkedinRegex = /^https?:\/\/(www\.)?linkedin\.com\/in\/[a-zA-Z0-9_-]+\/?$/;
+                
+                if (!linkedinUrl || !linkedinRegex.test(linkedinUrl)) {
+                    $('#linkedinUrl').addClass('is-invalid');
+                    isValid = false;
+                }
+                
+                return isValid;
+            }
+            
+            // Function to validate Step 5 fields
+            function validateStep5() {
+                let isValid = true;
+                
+                // Reset all validation styling
+                $('#password, #confirmPassword').removeClass('is-invalid');
+                
+                // Password validation - at least 8 characters with letters, numbers, and special characters
+                const password = $('#password').val();
+                const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+                
+                if (!password || !passwordRegex.test(password)) {
+                    $('#password').addClass('is-invalid');
+                    isValid = false;
+                }
+                
+                // Confirm password validation
+                const confirmPassword = $('#confirmPassword').val();
+                if (!confirmPassword || confirmPassword !== password) {
+                    $('#confirmPassword').addClass('is-invalid');
+                    isValid = false;
+                }
+                
+                return isValid;
+            }
+            
             // Function to move between steps
             function moveToStep(stepNumber) {
                 // Hide all steps
@@ -479,6 +780,93 @@
             $('#mobile').on('input', function() {
                 this.value = this.value.replace(/[^0-9]/g, '');
             });
+            
+            // Remove invalid styling as soon as user starts typing
+            $('#email, #firstName, #lastName, #mobile, #rollNo, #githubUrl, #linkedinUrl, #password, #confirmPassword').on('input', function() {
+                $(this).removeClass('is-invalid');
+            });
+            
+            // Remove invalid styling for dropdowns when changed
+            $('#year, #branch').on('change', function() {
+                $(this).removeClass('is-invalid');
+            });
+            
+            // Remove invalid styling for gender as soon as any option is selected
+            $('input[name="gender"]').on('change', function() {
+                $('input[name="gender"]').removeClass('is-invalid');
+            });
+            
+            // Remove email error message when changing the email
+            $('#email').on('input', function() {
+                $('#emailError').hide();
+            });
+            
+            // Remove roll number error message when changing the roll number
+            $('#rollNo').on('input', function() {
+                $('#rollNoError').hide();
+            });
+            
+            // Password toggle visibility
+            $('#togglePassword, #toggleConfirmPassword').click(function() {
+                const inputField = $(this).parent().find('input');
+                const icon = $(this).find('i');
+                
+                if (inputField.attr('type') === 'password') {
+                    inputField.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    inputField.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+            
+            // Password strength meter
+            $('#password').on('input', function() {
+                const password = $(this).val();
+                updatePasswordStrength(password);
+            });
+            
+            function updatePasswordStrength(password) {
+                const meter = $('#strengthMeter');
+                const text = $('#strengthText');
+                
+                // Remove all classes
+                meter.removeClass('weak medium good strong');
+                
+                if (!password) {
+                    meter.css('width', '0%');
+                    text.text('Password strength');
+                    return;
+                }
+                
+                // Calculate strength
+                let strength = 0;
+                
+                // Length check
+                if (password.length >= 8) strength += 1;
+                if (password.length >= 12) strength += 1;
+                
+                // Complexity checks
+                if (/[A-Z]/.test(password)) strength += 1;
+                if (/[a-z]/.test(password)) strength += 1;
+                if (/[0-9]/.test(password)) strength += 1;
+                if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+                
+                // Update UI based on strength
+                if (strength <= 2) {
+                    meter.addClass('weak');
+                    text.text('Weak password');
+                } else if (strength <= 4) {
+                    meter.addClass('medium');
+                    text.text('Medium strength');
+                } else if (strength <= 5) {
+                    meter.addClass('good');
+                    text.text('Good password');
+                } else {
+                    meter.addClass('strong');
+                    text.text('Strong password');
+                }
+            }
         });
     </script>
 </body>
