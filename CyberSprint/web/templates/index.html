@@ -21,6 +21,64 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    
+    <style>
+        .welcome-message {
+            background: rgba(10, 10, 30, 0.7);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 4px solid #8A2BE2;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .welcome-message h2 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+        }
+        
+        .team-status {
+            background: rgba(5, 5, 25, 0.6);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 3px solid #3498db;
+        }
+        
+        .team-status h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .team-name {
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .welcome-message {
+                padding: 15px;
+            }
+            
+            .welcome-message h2 {
+                font-size: 1.8rem;
+            }
+            
+            .team-status h3 {
+                font-size: 1.3rem;
+            }
+            
+
+            /* Hide typing animation on mobile */
+            .typing-animation-container {
+                display: none;
+            }
+
+            .hero-image {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -37,24 +95,22 @@
                 <img src="{% static 'images/MNavbrand.png' %}" alt="CodeMania" class="mobile-logo">
             </a>
             <div class="nav-right-section">
-                <!-- User Icon for Mobile -->
-                <button class="user-toggle d-lg-none" type="button" data-bs-toggle="collapse"
+                <!-- Toggle button for mobile -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarNav">
-                    <i class="fas fa-user"></i>
+                    <span class="navbar-toggler-icon"></span>
                 </button>
             </div>
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <div class="nav-panel">
                     <div class="nav-panel-header">
-                        <div class="panel-brand"> <span>CodeMania</span>
-                        </div>
+                        <div class="panel-brand"><span>CodeMania</span></div>
                         <button class="close-nav" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
                     <ul class="navbar-nav desktop-nav ms-auto">
-                        <!-- rest of your navigation items -->
                         <li class="nav-item">
                             <a class="nav-link active" href="{% url 'index' %}">Home</a>
                         </li>
@@ -70,12 +126,39 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#">RoadMap</a>
                         </li>
-                        <li>
-                            <a class="nav-link" href="{% url 'register' %}">Login / Register</a>
-                        </li>
+                        
+                        <!-- Dynamic navigation based on session -->
+                        {% if request.session.is_authenticated %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    {{ request.session.user_name }} <i class="fas fa-user-circle me-1"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-users me-2"></i>My Team</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'login' %}">
+                                    <i class="fas fa-sign-in-alt me-1"></i>Login
+                                </a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
+        </div>
     </nav>
 
     <!-- Hero Section -->
@@ -83,6 +166,7 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6 hero-text">
+                    {% if not request.session.is_authenticated %}
                     <div class="terminal-window">
                         <div class="terminal-header">
                             <div class="terminal-buttons">
@@ -112,9 +196,26 @@
                     <p class="description">Code, Compete, Conquer! Unleash your coding creativity at the premier coding
                         competition.
                         Build, collaborate, and innovate with like-minded developers.</p>
+                    {% else %}
+                    <div class="welcome-message">
+                        <h2>Welcome back, <span class="highlight">{{ request.session.user_name }}</span>!</h2>
+                        <p>We're glad to see you again at CodeMania 2025.</p>
+                    </div>
+                    {% endif %}
+                    
                     <div class="hero-buttons">
-                        <a href="{% url 'register' %}" class="btn btn-primary">Register Now</a>
-                        <a href="#" class="btn btn-secondary">Learn More</a>
+                        {% if not request.session.is_authenticated %}
+                            <a href="{% url 'register' %}" class="btn btn-primary">Register Now</a>
+                            <a href="#" class="btn btn-secondary">Learn More</a>
+                        {% else %}
+                            {% if request.session.user_role == None or request.session.user_role == '' %}
+                                <a href="#" class="btn btn-primary">Create a Team</a>
+                                <a href="#" class="btn btn-secondary">Join a Team</a>
+                            {% else %}
+                                <a href="#" class="btn btn-primary">My Dashboard</a>
+                                <a href="#" class="btn btn-secondary">View Challenges</a>
+                            {% endif %}
+                        {% endif %}
                     </div>
                     <div class="hackathon-date">
                         <i class="fas fa-calendar-alt"></i> April 30, 2025
