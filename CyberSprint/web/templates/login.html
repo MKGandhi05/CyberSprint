@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - CodeMania</title>
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+
+<body>
+    <!-- Background animation canvas -->
+    <div class="animation-wrapper">
+        <canvas id="stars"></canvas>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="{% static 'images/navBrand.png' %}" alt="CodeMania" class="desktop-logo">
+                <img src="{% static 'images/MNavbrand.png' %}" alt="CodeMania" class="mobile-logo">
+            </a>
+            <div class="nav-right-section">
+                <!-- Home Icon for Mobile - Direct link to home -->
+                <a href="{% url 'index' %}" class="home-icon-mobile d-lg-none">
+                    <i class="fas fa-home"></i>
+                </a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="nav-panel">
+                    <div class="nav-panel-header">
+                        <div class="panel-brand"> <span>CodeMania</span>
+                        </div>
+                        <button class="close-nav" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <ul class="navbar-nav desktop-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'index' %}">Home <i class="fas fa-home"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Inline styles for login page navbar -->
+    <style>
+        /* Mobile home icon styling */
+        .home-icon-mobile {
+            color: var(--text-color);
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .home-icon-mobile:hover {
+            color: var(--accent-blue);
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+        
+        /* Hide the regular navbar toggle and collapse menu on login page */
+        .login-page .user-toggle,
+        .login-page .navbar-collapse {
+            display: none !important;
+        }
+        
+        @media (max-width: 992px) {
+            .navbar-brand img.desktop-logo {
+                height: 40px;
+            }
+        }
+    </style>
+
+    <!-- Login Section -->
+    <section class="login-section">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Left Side - Hero Image and Welcome Text -->
+                <div class="col-lg-6 login-left-panel">
+                    <div class="login-hero-content">
+                        <div class="hero-image mb-4">
+                            <img src="{% static 'images/hero_logo.png' %}" alt="CodeMania Hackathon" class="img-fluid" style="max-height: 200px;">
+                        </div>
+                        
+                        <!-- Typing animation directly below logo -->
+                        <div class="typing-animation-container">
+                            <span class="static-text">Ready to </span>
+                            <span class="typing-text"></span>
+                        </div>
+                        
+                        <h2 class="mt-5">Welcome to <span class="highlight">CodeMania</span></h2>
+                    </div>
+                </div>
+                
+                <!-- Right Side - Login Form -->
+                <div class="col-lg-6 login-right-panel">
+                    <div class="login-card">
+                        <div class="card-header">
+                            <h3 class="text-center"><span class="highlight">Login</span> to Your Account</h3>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" action="" class="login-form">
+                                {% csrf_token %}
+                                
+                                <!-- Password Login Section -->
+                                <div id="password-login-section">
+                                    <div class="mb-2">
+                                        <label for="username" class="form-label">Username or Roll No</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                            <input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
+                                        </div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="password" class="form-label">Password</label>
+                                        <div class="password-field-container">
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                                <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
+                                            </div>
+                                            <button class="password-toggle-inner" type="button">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                        <div class="text-end mt-1">
+                                            <a href="#" class="forgot-password">Forgot Password?</a>
+                                        </div>
+                                    </div>
+                                    <div class="d-grid gap-2 mt-3 mb-2">
+                                        <button type="submit" class="btn btn-primary">Login</button>
+                                    </div>
+                                    
+                                    <div class="text-center mb-2">
+                                        <span class="divider-text">or</span>
+                                    </div>
+                                    
+                                    <div class="d-grid gap-2">
+                                        <button type="button" class="btn btn-secondary" id="switch-to-otp-btn">Login with OTP</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Email OTP Section (Initially Hidden) -->
+                                <div id="email-otp-section" style="display: none;">
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email for OTP</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your registered email">
+                                        </div>
+                                    </div>
+                                    <div class="d-grid gap-2 mb-3">
+                                        <button type="button" class="btn btn-primary" id="send-otp-btn">Send OTP</button>
+                                    </div>
+                                    
+                                    <div class="text-center mb-3">
+                                        <span class="divider-text">or</span>
+                                    </div>
+                                    
+                                    <div class="d-grid gap-2">
+                                        <button type="button" class="btn btn-secondary" id="switch-to-password-btn">Login with Password</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- OTP Verification Section (Initially Hidden) -->
+                                <div id="otp-verification-section" style="display: none;">
+                                    <div class="mb-4 text-center">
+                                        <p class="mb-1">Enter the verification code sent to</p>
+                                        <p class="user-email fw-bold"></p>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <div class="otp-input-container">
+                                            <input type="text" class="otp-input" maxlength="1" data-index="1">
+                                            <input type="text" class="otp-input" maxlength="1" data-index="2">
+                                            <input type="text" class="otp-input" maxlength="1" data-index="3">
+                                            <input type="text" class="otp-input" maxlength="1" data-index="4">
+                                            <input type="text" class="otp-input" maxlength="1" data-index="5">
+                                            <input type="text" class="otp-input" maxlength="1" data-index="6">
+                                        </div>
+                                        <input type="hidden" id="otp" name="otp">
+                                    </div>
+                                    
+                                    <div class="d-grid gap-2 mb-3">
+                                        <button type="button" class="btn btn-primary" id="verify-otp-btn">Verify & Login</button>
+                                    </div>
+                                    
+                                    <div class="text-center mb-3">
+                                        <div class="resend-container">
+                                            <span id="countdown-timer">Resend OTP in <span id="timer">120</span> seconds</span>
+                                            <button type="button" id="resend-otp-btn" class="btn btn-link p-0 disabled">Resend OTP</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="text-center mt-4">
+                                        <span class="divider-text">or</span>
+                                    </div>
+                                    
+                                    <div class="d-grid gap-2 mt-3">
+                                        <button type="button" class="btn btn-secondary" id="switch-to-password-from-otp-btn">Login with Password</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="card-footer text-center">
+                            <p>Don't have an account? <a href="#" class="highlight-link">Register</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="{% static 'js/Script.js' %}"></script>
+    <script src="{% static 'js/login.js' %}"></script>
+</body>
+
+</html>

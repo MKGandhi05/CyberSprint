@@ -2,6 +2,29 @@
 
 // Wait for the document to be fully loaded before running scripts
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize stars background animation
+    const starsCanvas = document.getElementById('stars');
+    if (starsCanvas) {
+        initStarsAnimation(starsCanvas);
+    }
+    
+    // Add navbar scroll effect
+    const navbar = document.querySelector('.navbar');
+    
+    function handleNavbarScroll() {
+        if (window.scrollY > 50) { // Apply effect after scrolling 50px
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    }
+    
+    // Call once on load
+    handleNavbarScroll();
+    
+    // Add scroll event listener
+    window.addEventListener('scroll', handleNavbarScroll);
+    
     // Mobile navigation enhancement
     const navbarCollapse = document.getElementById('navbarNav');
     const mobileOverlay = document.querySelector('.mobile-menu-overlay');
@@ -235,4 +258,148 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     `;
     document.head.appendChild(style);
+
+    // Particle network animation with enhanced visibility
+    function initStarsAnimation(canvas) {
+        const ctx = canvas.getContext('2d');
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        let particles = [];
+        
+        // Configuration - increased values for better visibility
+        const isMobile = window.innerWidth <= 768; // Check if mobile screen
+        const particleCount = isMobile ? 50 : 80;  // Fewer particles on mobile
+        const particleMaxSize = 4;  // Larger max size
+        const particleMinSize = 1;  // Larger min size
+        const particleColor = 'rgba(255, 255, 255, 0.9)';  // More opaque
+        const lineColor = 'rgba(255, 255, 255, 0.3)';  // More visible lines
+        const maxDistance = isMobile ? 150 : 180; // Shorter connection distance on mobile
+        const particleSpeed = 0.6; // Slightly faster movement
+        
+        // Set canvas size
+        canvas.width = width;
+        canvas.height = height;
+        
+        // Create particles
+        const createParticles = () => {
+            particles = [];
+            
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    size: Math.random() * (particleMaxSize - particleMinSize) + particleMinSize,
+                    speedX: (Math.random() - 0.5) * particleSpeed,
+                    speedY: (Math.random() - 0.5) * particleSpeed
+                });
+            }
+        };
+        
+        // Update particles
+        const updateParticles = () => {
+            particles.forEach(particle => {
+                // Move particle
+                particle.x += particle.speedX;
+                particle.y += particle.speedY;
+                
+                // Bounce off edges
+                if (particle.x < 0 || particle.x > width) {
+                    particle.speedX *= -1;
+                }
+                
+                if (particle.y < 0 || particle.y > height) {
+                    particle.speedY *= -1;
+                }
+            });
+        };
+        
+        // Draw particles and connection lines
+        const drawParticles = () => {
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+            
+            // Draw particles
+            particles.forEach(particle => {
+                ctx.beginPath();
+                ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                ctx.fillStyle = particleColor;
+                ctx.fill();
+            });
+            
+            // Draw connection lines
+            particles.forEach((particle1, i) => {
+                particles.slice(i + 1).forEach(particle2 => {
+                    const dx = particle1.x - particle2.x;
+                    const dy = particle1.y - particle2.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < maxDistance) {
+                        // Opacity based on distance (closer = more visible)
+                        const opacity = 1 - (distance / maxDistance);
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(particle1.x, particle1.y);
+                        ctx.lineTo(particle2.x, particle2.y);
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.2})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                });
+            });
+            
+            // Update particles for next frame
+            updateParticles();
+            
+            // Continue animation
+            requestAnimationFrame(drawParticles);
+        };
+        
+        // Handle mouse movement (particles follow cursor)
+        let mouseX = 0;
+        let mouseY = 0;
+        let isMouseMoving = false;
+        
+        canvas.addEventListener('mousemove', (event) => {
+            mouseX = event.clientX;
+            mouseY = event.clientY;
+            isMouseMoving = true;
+            
+            // After 2 seconds of no movement, reset flag
+            setTimeout(() => {
+                isMouseMoving = false;
+            }, 2000);
+        });
+        
+        // Periodically attract particles to mouse position if mouse is moving
+        setInterval(() => {
+            if (isMouseMoving) {
+                const attractionParticles = particles.slice(0, 3); // Only move a few particles
+                attractionParticles.forEach(particle => {
+                    // Calculate direction to mouse
+                    const dx = mouseX - particle.x;
+                    const dy = mouseY - particle.y;
+                    
+                    // Normalize and set new speed
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance > 5) { // Only move if not too close
+                        particle.speedX = dx / distance * 2;
+                        particle.speedY = dy / distance * 2;
+                    }
+                });
+            }
+        }, 100);
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            createParticles();
+        });
+        
+        // Initialize and start animation
+        createParticles();
+        drawParticles();
+    }
 });

@@ -124,14 +124,48 @@ section {
     color: #8b949e;
 }
 
+/* Background Animation - Limited to nav and hero */
+.animation-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* Limit animation to nav and hero sections */
+.navbar, .hero {
+    position: relative;
+}
+
+#stars {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
 /* Navigation */
 .navbar {
-    background-color: var(--bg-color);
+    background-color: transparent;
     padding: 15px 0;
-    border-bottom: 1px solid var(--border-color);
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    width: 100%;
     z-index: 1000;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.navbar.scrolled {
+    background-color: rgba(13, 17, 23, 0.9);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
 }
 
 .navbar-brand img {
@@ -360,11 +394,14 @@ section {
 
 /* Hero Section */
 .hero {
+    position: relative;
     min-height: 80vh;
     display: flex;
     align-items: center;
     padding: 100px 0;
-    background: linear-gradient(180deg, var(--bg-color) 0%, #0c0f14 100%);
+    background: transparent;
+    z-index: 10;
+    margin-top: 80px;
 }
 
 .hero-text {
@@ -808,6 +845,33 @@ section {
     }
 }
 
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+    background-color: var(--bg-color);
+}
+
+::-webkit-scrollbar-track {
+    background-color: rgba(13, 17, 23, 0.7);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(45deg, var(--accent-purple), var(--accent-blue));
+}
+
+/* Firefox scrollbar styling */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-blue) var(--bg-color);
+}
+
 /* Footer */
 footer {
     background-color: #0a0e14;
@@ -1030,4 +1094,421 @@ footer h4 {
     }
     
     /* Your existing mobile styles */
+}
+
+/* Login Form Styles */
+.login-section {
+    padding: 120px 0 80px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.login-card {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+}
+
+.login-card .card-header {
+    background-color: rgba(36, 41, 46, 0.7);
+    border-bottom: 1px solid var(--border-color);
+    padding: 20px;
+}
+
+.login-card .card-header h3 {
+    margin-bottom: 0;
+    font-size: 1.8rem;
+}
+
+.login-card .card-body {
+    padding: 30px;
+}
+
+.login-card .card-footer {
+    background-color: rgba(36, 41, 46, 0.5);
+    border-top: 1px solid var(--border-color);
+    padding: 15px;
+}
+
+.login-card .card-footer p {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.login-form .form-control {
+    background-color: rgba(13, 17, 23, 0.5);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    padding: 12px;
+    height: auto;
+}
+
+.login-form .form-control:focus {
+    background-color: rgba(22, 27, 34, 0.7);
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 0.2rem rgba(88, 166, 255, 0.25);
+}
+
+.login-form .input-group-text {
+    background-color: rgba(35, 40, 45, 0.7);
+    border: 1px solid var(--border-color);
+    color: var(--accent-blue);
+}
+
+.login-form .form-check-input {
+    background-color: rgba(13, 17, 23, 0.5);
+    border: 1px solid var(--border-color);
+}
+
+.login-form .form-check-input:checked {
+    background-color: var(--accent-blue);
+}
+
+.login-form label {
+    color: #8b949e;
+    font-weight: 500;
+}
+
+.highlight-link {
+    color: var(--accent-blue);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.highlight-link:hover {
+    color: var(--accent-purple);
+    text-decoration: underline;
+}
+
+.login-form .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+    opacity: 1;
+}
+
+/* For Firefox */
+.login-form .form-control::-moz-placeholder {
+    color: rgba(255, 255, 255, 0.7);
+    opacity: 1;
+}
+
+/* For Edge */
+.login-form .form-control::-ms-input-placeholder {
+    color: rgba(255, 255, 255, 0.7);
+    opacity: 1;
+}
+
+/* For Chrome, Safari and Opera */
+.login-form .form-control::-webkit-input-placeholder {
+    color: rgba(255, 255, 255, 0.7);
+    opacity: 1;
+}
+
+/* Login Page Split Screen Layout */
+.login-section {
+    min-height: 100vh;
+    padding: 90px 0 0;
+    display: flex;
+    align-items: center;
+}
+
+.login-section .container-fluid {
+    padding: 0;
+}
+
+.login-section .row {
+    margin: 0;
+    min-height: calc(100vh - 90px);
+}
+
+/* Left panel with hero image and welcome text */
+.login-left-panel {
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-hero-content {
+    max-width: 500px;
+    text-align: center;
+}
+
+.login-hero-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.login-hero-content .welcome-text {
+    color: #8b949e;
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+}
+
+/* Right panel with login form */
+.login-right-panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    opacity: 0.9;
+}
+
+.login-right-panel .login-card {
+    width: 100%;
+    max-width: 450px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .login-section .row {
+        flex-direction: column;
+    }
+    
+    .login-left-panel {
+        display: none;
+    }
+    
+    .login-right-panel {
+        padding: 40px 20px;
+    }
+}
+
+/* OTP section styles */
+.divider-text {
+    position: relative;
+    display: inline-block;
+    color: #8b949e;
+    font-size: 0.9rem;
+}
+
+.divider-text:before, .divider-text:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 80px;
+    height: 1px;
+    background-color: var(--border-color);
+}
+
+.divider-text:before {
+    right: 100%;
+    margin-right: 15px;
+}
+
+.divider-text:after {
+    left: 100%;
+    margin-left: 15px;
+}
+
+.otp-section {
+    padding-top: 10px;
+    border-top: 0px solid var(--border-color);
+}
+
+#send-otp-btn {
+    background-color: rgba(35, 40, 45, 0.7);
+    border-color: var(--border-color);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+#send-otp-btn:hover {
+    background-color: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: white;
+}
+
+/* OTP Input Styling */
+.otp-input-container {
+    display: flex;
+    gap: 8px;
+    margin: 20px auto;
+    justify-content: center;
+}
+
+.otp-input {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    background-color: transparent;
+    border-radius: 8px;
+    color: var(--text-color);
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    caret-color: var(--accent-blue);
+}
+
+.otp-input:focus {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.2);
+    outline: none;
+}
+
+/* Animation for digits entering from bottom */
+.otp-input.animate-digit {
+    animation: digitEntrance 0.3s ease forwards;
+}
+
+@keyframes digitEntrance {
+    0% {
+        transform: translateY(15px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Placeholder styling for empty inputs */
+.otp-input::placeholder {
+    color: rgba(139, 148, 158, 0.5);
+}
+
+/* User email styling */
+.user-email {
+    color: var(--text-color);
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+/* Resend OTP styling */
+.resend-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+#countdown-timer {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+#resend-otp-btn {
+    color: var(--accent-blue);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+#resend-otp-btn:not(.disabled):hover {
+    text-decoration: underline;
+}
+
+#resend-otp-btn.disabled {
+    color: var(--text-muted);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Login Page Layout */
+.login-container {
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+}
+
+.login-left {
+    width: 50%;
+    background-color: var(--secondary-bg);
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-right {
+    width: 50%;
+    background-color: var(--primary-bg);
+    padding: 20px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 400px;
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.login-card-header {
+    padding: 15px 20px;
+    background-color: var(--card-header-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.login-card-body {
+    padding: 20px;
+}
+
+/* Password field styling */
+.forgot-password {
+    color: var(--accent-blue);
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.forgot-password:hover {
+    color: #3ea8ff;
+    text-decoration: underline;
+}
+
+.password-toggle {
+    border-color: var(--border-color);
+    background-color: rgba(13, 17, 23, 0.1);
+    color: var(--text-muted);
+}
+
+.password-toggle:hover {
+    background-color: rgba(13, 17, 23, 0.2);
+    color: var(--text-color);
+}
+
+.password-toggle:focus {
+    box-shadow: none;
+    border-color: var(--accent-blue);
+}
+
+/* Password field with inner toggle button */
+.password-field-container {
+    position: relative;
+}
+
+.password-toggle-inner {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+    z-index: 5;
+    transition: color 0.2s ease;
+}
+
+.password-toggle-inner:hover {
+    color: var(--text-color);
+}
+
+.password-toggle-inner:focus {
+    outline: none;
 }
