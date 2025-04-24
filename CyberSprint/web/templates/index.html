@@ -209,8 +209,29 @@
                             <a href="#" class="btn btn-secondary">Learn More</a>
                         {% else %}
                             {% if request.session.user_role == None or request.session.user_role == '' %}
-                                <a href="#" class="btn btn-primary">Create a Team</a>
-                                <a href="#" class="btn btn-secondary">Join a Team</a>
+                                <div class="team-creation-section mt-4" style="max-width: 600px; margin: 0 auto;">
+                                    <div style="margin-bottom: 20px;">
+                                        <h5 class="text-white mb-2" style="font-weight: normal; letter-spacing: 1px;">TEAM NAME</h5>
+                                        <div class="d-flex gap-2" style="flex-direction: row;">
+                                            <input type="text" class="form-control bg-white text-dark" style="border-radius: 4px; border: none; height: 45px; flex: 1;">
+                                            <button class="btn text-white" style="background-color: #c3d3ff; color: #333 !important; border-radius: 4px; padding: 10px 20px; width: 100px; flex-shrink: 0; font-weight: 500;">Create</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-flex align-items-center my-4">
+                                        <div style="flex-grow: 1; height: 1px; background-color: #ccc; opacity: 0.3;"></div>
+                                        <div class="px-3 text-white-50">OR</div>
+                                        <div style="flex-grow: 1; height: 1px; background-color: #ccc; opacity: 0.3;"></div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h5 class="text-white mb-2" style="font-weight: normal; letter-spacing: 1px;">TEAM CODE</h5>
+                                        <div class="d-flex gap-2" style="flex-direction: row;">
+                                            <input type="text" class="form-control bg-white text-dark" placeholder="e.g. HX567QUV" style="border-radius: 4px; border: none; height: 45px; flex: 1;">
+                                            <button class="btn" style="background-color: #c3d3ff; color: #333; border-radius: 4px; padding: 10px 20px; width: 100px; flex-shrink: 0; font-weight: 500;">Join</button>
+                                        </div>
+                                    </div>
+                                </div>
                             {% else %}
                                 <a href="#" class="btn btn-primary">My Dashboard</a>
                                 <a href="#" class="btn btn-secondary">View Challenges</a>
