@@ -63,7 +63,7 @@ def credentials_login(request):
             return JsonResponse({
                 'status': 'success',
                 'message': 'Login successful',
-                'redirect': '/dashboard/'
+                'redirect': '/'  # Redirect to homepage
             })
         else:
             # Invalid password
@@ -162,7 +162,7 @@ def verify_login_otp(request):
             return JsonResponse({
                 'status': 'success',
                 'message': 'Login successful',
-                'redirect': '/dashboard/'
+                'redirect': '/'  # Redirect to homepage
             })
         
         except Participant.DoesNotExist:
@@ -219,6 +219,12 @@ def logout(request):
             del request.session[key]
     
     return redirect('login')
+
+def generate_otp(length=6):
+    """Generate a random numeric OTP of specified length"""
+    # Generate a random 6-digit OTP
+    digits = string.digits
+    return ''.join(random.choice(digits) for _ in range(length))
 
 def register(request):
     if request.method == 'POST':
@@ -309,10 +315,6 @@ def check_email(request):
     
     # Return JSON response
     return JsonResponse({'exists': email_exists})
-
-def generate_otp():
-    """Generate a 6-digit OTP"""
-    return ''.join(random.choices(string.digits, k=6))
 
 @require_POST
 def send_otp(request):

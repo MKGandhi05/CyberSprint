@@ -59,34 +59,62 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
                 this.disabled = true;
                 
-                // Simulate API call to send OTP
-                setTimeout(() => {
-                    // Display user email in the OTP verification screen
-                    if (userEmailEl) {
-                        userEmailEl.textContent = email;
-                    }
-                    
-                    // Switch to OTP verification section
-                    passwordLoginSection.style.display = 'none';
-                    emailOTPSection.style.display = 'none';
-                    otpVerificationSection.style.display = 'block';
-                    
+                // Get the form and set values
+                const form = document.getElementById('loginForm');
+                document.getElementById('login_method').value = 'otp';
+                document.getElementById('login_action').value = 'send_otp';
+                
+                // Create form data
+                const formData = new FormData(form);
+                
+                // Send AJAX request to send OTP
+                fetch(window.location.href, {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'same-origin'
+                })
+                .then(response => response.json())
+                .then(data => {
                     // Reset button
                     this.innerHTML = 'Send OTP';
                     this.disabled = false;
                     
-                    // Focus on the first OTP input
-                    if (otpInputs && otpInputs.length > 0) {
-                        otpInputs[0].focus();
+                    if (data.status === 'success') {
+                        showToast(data.message, 'success');
+                        
+                        // Display user email in the OTP verification screen
+                        if (userEmailEl) {
+                            userEmailEl.textContent = email;
+                        }
+                        
+                        // Switch to OTP verification section
+                        passwordLoginSection.style.display = 'none';
+                        emailOTPSection.style.display = 'none';
+                        otpVerificationSection.style.display = 'block';
+                        
+                        // Focus on the first OTP input
+                        if (otpInputs && otpInputs.length > 0) {
+                            otpInputs[0].focus();
+                        }
+                        
+                        // Start countdown timer
+                        startResendOtpTimer();
+                    } else {
+                        showToast(data.message || 'Failed to send OTP. Please try again.', 'error');
+                        emailInput.classList.add('is-invalid');
                     }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('An error occurred. Please try again.', 'error');
                     
-                    // Start countdown timer
-                    startResendOtpTimer();
-                    
-                    showToast('OTP sent to your email', 'success');
-                }, 1500);
+                    // Reset button
+                    this.innerHTML = 'Send OTP';
+                    this.disabled = false;
+                });
             } else {
                 showToast('Please enter a valid email address', 'error');
+                emailInput.classList.add('is-invalid');
             }
         });
     }
@@ -139,34 +167,60 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Show loading state
                 this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
                 
-                // Simulate API call to resend OTP
-                setTimeout(() => {
+                // Get the form and set values
+                const form = document.getElementById('loginForm');
+                document.getElementById('login_method').value = 'otp';
+                document.getElementById('login_action').value = 'resend_otp';
+                
+                // Create form data
+                const formData = new FormData(form);
+                
+                // Send AJAX request to resend OTP
+                fetch(window.location.href, {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'same-origin'
+                })
+                .then(response => response.json())
+                .then(data => {
                     // Reset button
                     this.innerHTML = 'Resend OTP';
-                    this.classList.add('disabled');
-                    this.style.display = 'none';
                     
-                    // Clear all OTP inputs
-                    if (otpInputs) {
-                        otpInputs.forEach(input => {
-                            input.value = '';
-                            input.classList.remove('animate-digit');
-                        });
+                    if (data.status === 'success') {
+                        showToast(data.message, 'success');
+                        
+                        this.classList.add('disabled');
+                        this.style.display = 'none';
+                        
+                        // Clear all OTP inputs
+                        if (otpInputs) {
+                            otpInputs.forEach(input => {
+                                input.value = '';
+                                input.classList.remove('animate-digit');
+                            });
+                        }
+                        if (otpHiddenInput) {
+                            otpHiddenInput.value = '';
+                        }
+                        
+                        // Focus on the first OTP input
+                        if (otpInputs && otpInputs.length > 0) {
+                            otpInputs[0].focus();
+                        }
+                        
+                        // Start countdown timer again
+                        startResendOtpTimer();
+                    } else {
+                        showToast(data.message || 'Failed to resend OTP. Please try again.', 'error');
                     }
-                    if (otpHiddenInput) {
-                        otpHiddenInput.value = '';
-                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('An error occurred. Please try again.', 'error');
                     
-                    // Focus on the first OTP input
-                    if (otpInputs && otpInputs.length > 0) {
-                        otpInputs[0].focus();
-                    }
-                    
-                    // Start countdown timer again
-                    startResendOtpTimer();
-                    
-                    showToast('OTP resent to your email', 'success');
-                }, 1500);
+                    // Reset button
+                    this.innerHTML = 'Resend OTP';
+                });
             }
         });
     }
@@ -283,11 +337,52 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
                 this.disabled = true;
                 
-                // Simulate API call to verify OTP
-                setTimeout(() => {
-                    // Simulate successful login
-                    window.location.href = '/';
-                }, 1500);
+                // Get the form and set values
+                const form = document.getElementById('loginForm');
+                document.getElementById('login_method').value = 'otp';
+                document.getElementById('login_action').value = 'verify_otp';
+                
+                // Create form data
+                const formData = new FormData(form);
+                
+                // Send AJAX request to verify OTP
+                fetch(window.location.href, {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'same-origin'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showToast(data.message, 'success');
+                        
+                        // Redirect if a redirect URL is provided
+                        if (data.redirect) {
+                            setTimeout(() => {
+                                window.location.href = data.redirect;
+                            }, 1000);
+                        } else {
+                            // Default redirect to index
+                            setTimeout(() => {
+                                window.location.href = '/';
+                            }, 1000);
+                        }
+                    } else {
+                        showToast(data.message || 'Invalid OTP. Please try again.', 'error');
+                        
+                        // Reset button state
+                        this.innerHTML = 'Verify & Login';
+                        this.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('An error occurred. Please try again.', 'error');
+                    
+                    // Reset button state
+                    this.innerHTML = 'Verify & Login';
+                    this.disabled = false;
+                });
             } else {
                 showToast('Please enter a valid 6-digit OTP', 'error');
                 // Focus on first empty input or the first one if all are filled
