@@ -32,7 +32,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="{% url 'index' %}">
                 <img src="{% static 'images/navBrand.png' %}" alt="CodeMania" class="desktop-logo">
                 <img src="{% static 'images/MNavbrand.png' %}" alt="CodeMania" class="mobile-logo">
             </a>
@@ -56,7 +56,7 @@
                     <ul class="navbar-nav desktop-nav ms-auto">
                         <!-- rest of your navigation items -->
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">Home</a>
+                            <a class="nav-link active" href="{% url 'index' %}">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">About</a>
@@ -74,7 +74,7 @@
                             <a class="nav-link" href="#">FAQs</a>
                         </li>
                         <li>
-                            <a class="nav-link" href="#">Register</a>
+                            <a class="nav-link" href="{% url 'register' %}">Login / Register</a>
                         </li>
                     </ul>
                 </div>
@@ -116,7 +116,7 @@
                         competition.
                         Build, collaborate, and innovate with like-minded developers.</p>
                     <div class="hero-buttons">
-                        <a href="#" class="btn btn-primary">Register Now</a>
+                        <a href="{% url 'register' %}" class="btn btn-primary">Register Now</a>
                         <a href="#" class="btn btn-secondary">Learn More</a>
                     </div>
                     <div class="hackathon-date">
@@ -399,7 +399,7 @@
         <div class="container text-center">
             <h2>Ready to <span class="highlight">Code</span> the Future?</h2>
             <p>Join hundreds of developers for 48 hours of coding, learning, and innovation</p>
-            <a href="#" class="btn btn-primary btn-lg">Register Your Team</a>
+            <a href="{% url 'register' %}" class="btn btn-primary btn-lg">Register Your Team</a>
             <div class="countdown">
                 <div id="countdown-timer">
                     <div class="countdown-item">

@@ -265,6 +265,52 @@
             font-size: 12px;
             color: #888;
         }
+        
+        /* OTP input styles */
+        .otp-input-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 0 auto;
+        }
+        
+        .otp-input {
+            width: 40px;
+            height: 45px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+        }
+        
+        .otp-input:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            outline: none;
+        }
+        
+        /* Resend OTP styles */
+        .resend-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        
+        #resend-otp-btn {
+            color: var(--accent-blue);
+            text-decoration: none;
+            margin-top: 5px;
+        }
+        
+        #resend-otp-btn.disabled {
+            color: var(--text-muted);
+            pointer-events: none;
+        }
     </style>
 
     <!-- Register Section -->
@@ -401,8 +447,6 @@
                                             <option value="1">1st Year</option>
                                             <option value="2">2nd Year</option>
                                             <option value="3">3rd Year</option>
-                                            <option value="4">4th Year</option>
-                                            <option value="5">5th Year</option>
                                         </select>
                                     </div>
                                     
@@ -411,13 +455,16 @@
                                         <label for="branch" class="form-label">Branch</label>
                                         <select class="form-select" id="branch" name="branch" required>
                                             <option value="" selected disabled>Select Branch</option>
-                                            <option value="CSE">Computer Science Engineering</option>
-                                            <option value="ECE">Electronics & Communication Engineering</option>
-                                            <option value="EEE">Electrical & Electronics Engineering</option>
-                                            <option value="MECH">Mechanical Engineering</option>
-                                            <option value="CIVIL">Civil Engineering</option>
-                                            <option value="IT">Information Technology</option>
-                                            <option value="OTHER">Other</option>
+                                            <option value="CSE">CSE</option>
+                                            <option value="ECE">ECE</option>
+                                            <option value="EEE">EEE</option>
+                                            <option value="CS">Cyber Security</option>
+                                            <option value="AIML">AIML</option>
+                                            <option value="DS">Data Science</option>
+                                            <option value="AIDS">AIDS</option>
+                                            <option value="IT">IT</option>
+                                            <option value="IOT">IOT</option>
+                                            <option value="CSIT">CSIT</option>                                        
                                         </select>
                                     </div>
                                     
@@ -464,22 +511,23 @@
                                     <!-- Password -->
                                     <div class="mb-2">
                                         <label for="password" class="form-label">Password</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                            <input type="password" class="form-control" id="password" name="password" required>
-                                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
+                                        <div class="password-field-container">
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                                <input type="password" class="form-control" id="password" name="password" required placeholder="Enter password">
+                                            </div>
                                         </div>
                                     </div>
                                     
                                     <!-- Confirm Password -->
                                     <div class="mb-2">
                                         <label for="confirmPassword" class="form-label">Confirm Password</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
-                                            <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                                        <div class="password-field-container">
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required placeholder="Confirm your password">
+                                            </div>
+                                            <button class="password-toggle-inner" type="button" id="toggleConfirmPassword">
                                                 <i class="fas fa-eye"></i>
                                             </button>
                                         </div>
@@ -496,14 +544,51 @@
                                     </div>
                                     <small class="form-text text-white">Password must be at least 8 characters long and include a mix of letters, numbers, and special characters.</small>
 
+                                    
                                     <!-- Navigation Buttons -->
                                     <div class="d-flex justify-content-between mt-3">
                                         <button type="button" id="backToStep4Btn" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</button>
-                                        <button type="button" id="goToStep6Btn" class="btn btn-primary">Next <i class="fas fa-arrow-right"></i></button>
+                                        <button type="button" id="goToStep6Btn" class="btn btn-primary">Get OTP <i class="fas fa-arrow-right"></i></button>
                                     </div>
                                 </div>
                                 
-                                <!-- Other steps will be added later -->
+                                <!-- Step 6: OTP Verification -->
+                                <div id="step6" class="registration-step">
+                                    <h5 class="text-center mb-3">Email Verification</h5>
+                                    
+                                    <div class="mb-4 text-center">
+                                        <p class="mb-1">We've sent a verification code to</p>
+                                        <p class="user-email fw-bold" id="displayEmail"></p>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <div class="otp-input-container">
+                                            <input type="text" class="otp-input" maxlength="1" data-index="1">
+                                            <input type="text" class="otp-input" maxlength="1" data-index="2">
+                                            <input type="text" class="otp-input" maxlength="1" data-index="3">
+                                            <input type="text" class="otp-input" maxlength="1" data-index="4">
+                                            <input type="text" class="otp-input" maxlength="1" data-index="5">
+                                            <input type="text" class="otp-input" maxlength="1" data-index="6">
+                                        </div>
+                                        <input type="hidden" id="otp" name="otp">
+                                    </div>
+                                    
+                                    <div class="d-grid gap-2 mb-3">
+                                        <button type="button" class="btn btn-primary" id="verify-otp-btn">Verify & Register</button>
+                                    </div>
+                                    
+                                    <div class="text-center mb-3">
+                                        <div class="resend-container">
+                                            <span id="countdown-timer">Resend OTP in <span id="timer"> 120 </span> seconds</span>
+                                            <button type="button" id="resend-otp-btn" class="btn btn-link p-0 disabled">Resend OTP</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Navigation Buttons -->
+                                    <div class="d-flex justify-content-between mt-3">
+                                        <button type="button" id="backToStep5Btn" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</button>
+                                    </div>
+                                </div>
                                 
                             </form>
                         </div>
@@ -624,8 +709,99 @@
             $('#goToStep6Btn').click(function() {
                 // Validate Step 5 fields
                 if (validateStep5()) {
-                    // Move to step 6 (will be implemented later)
-                    alert("Step 5 validation successful! Step 6 will be implemented soon.");
+                    // Set email in the OTP verification section
+                    $('#displayEmail').text($('#email').val());
+                    
+                    // Start OTP countdown timer
+                    startOtpTimer();
+                    
+                    // Move to step 6
+                    moveToStep(6);
+                    
+                    // Simulate sending OTP to the server
+                    // In a real application, you would make an AJAX call to send the OTP
+                    simulateOtpSend();
+                }
+            });
+            
+            // Step 6 Navigation
+            $('#backToStep5Btn').click(function() {
+                moveToStep(5);
+            });
+            
+            // OTP Verification
+            $('.otp-input').on('input', function() {
+                let index = parseInt($(this).data('index'));
+                let value = $(this).val();
+                
+                // Move to next input if a digit is entered
+                if (value && index < 6) {
+                    $('.otp-input[data-index="' + (index + 1) + '"]').focus();
+                }
+                
+                // Combine all OTP digits into hidden input
+                combineOtpValues();
+            });
+            
+            // Handle backspace in OTP inputs
+            $('.otp-input').on('keydown', function(e) {
+                let index = parseInt($(this).data('index'));
+                
+                // On backspace, clear current input and move to previous
+                if (e.keyCode === 8 && index > 1 && $(this).val() === '') {
+                    e.preventDefault();
+                    $('.otp-input[data-index="' + (index - 1) + '"]').focus().val('');
+                }
+            });
+            
+            // Paste functionality for OTP
+            $('.otp-input').on('paste', function(e) {
+                e.preventDefault();
+                let pastedData = (e.originalEvent.clipboardData || window.clipboardData).getData('text');
+                
+                // If pasted data is a 6-digit number
+                if (/^\d{6}$/.test(pastedData)) {
+                    // Distribute the digits to individual inputs
+                    for (let i = 1; i <= 6; i++) {
+                        $('.otp-input[data-index="' + i + '"]').val(pastedData.charAt(i - 1));
+                    }
+                    
+                    // Combine all OTP digits into hidden input
+                    combineOtpValues();
+                }
+            });
+            
+            // Verify OTP button
+            $('#verify-otp-btn').click(function() {
+                // Get the combined OTP value
+                let otpValue = $('#otp').val();
+                
+                // Check if OTP is complete
+                if (otpValue.length !== 6) {
+                    return;
+                }
+                
+                // In a real application, you would validate the OTP via AJAX
+                // Here we're simulating a successful verification
+                
+                // Submit the form
+                $('#registrationForm').submit();
+            });
+            
+            // Resend OTP button
+            $('#resend-otp-btn').click(function() {
+                if (!$(this).hasClass('disabled')) {
+                    // Reset all OTP inputs
+                    $('.otp-input').val('');
+                    
+                    // Reset the hidden OTP input
+                    $('#otp').val('');
+                    
+                    // Restart the timer
+                    startOtpTimer();
+                    
+                    // Simulate sending the OTP again
+                    simulateOtpSend();
                 }
             });
             
@@ -807,18 +983,26 @@
             });
             
             // Password toggle visibility
-            $('#togglePassword, #toggleConfirmPassword').click(function() {
-                const inputField = $(this).parent().find('input');
-                const icon = $(this).find('i');
+            $("#togglePassword").on('click', function() {
+                togglePassword("#password", this);
+            });
+            
+            $("#toggleConfirmPassword").on('click', function() {
+                togglePassword("#confirmPassword", this);
+            });
+            
+            function togglePassword(inputId, button) {
+                var input = $(inputId);
+                var icon = $(button).find('i');
                 
-                if (inputField.attr('type') === 'password') {
-                    inputField.attr('type', 'text');
+                if (input.attr('type') === 'password') {
+                    input.attr('type', 'text');
                     icon.removeClass('fa-eye').addClass('fa-eye-slash');
                 } else {
-                    inputField.attr('type', 'password');
+                    input.attr('type', 'password');
                     icon.removeClass('fa-eye-slash').addClass('fa-eye');
                 }
-            });
+            }
             
             // Password strength meter
             $('#password').on('input', function() {
@@ -866,6 +1050,73 @@
                     meter.addClass('strong');
                     text.text('Strong password');
                 }
+                
+                // Explicitly set width again when adding new classes
+                switch(strength) {
+                    case 0:
+                    case 1:
+                    case 2:
+                        meter.css('width', '25%');
+                        break;
+                    case 3:
+                    case 4:
+                        meter.css('width', '50%');
+                        break;
+                    case 5:
+                        meter.css('width', '75%');
+                        break;
+                    default:
+                        meter.css('width', '100%');
+                }
+            }
+            
+            // Helper functions for OTP
+            function combineOtpValues() {
+                let combined = '';
+                $('.otp-input').each(function() {
+                    combined += $(this).val() || '';
+                });
+                $('#otp').val(combined);
+            }
+            
+            function startOtpTimer() {
+                // Disable the resend button
+                $('#resend-otp-btn').addClass('disabled');
+                
+                // Show the countdown timer
+                $('#countdown-timer').show();
+                
+                // Set the timer to 120 seconds (2 minutes)
+                let timeLeft = 120;
+                $('#timer').text(timeLeft);
+                
+                // Clear any existing interval
+                if (window.otpTimerInterval) {
+                    clearInterval(window.otpTimerInterval);
+                }
+                
+                // Start the countdown
+                window.otpTimerInterval = setInterval(function() {
+                    timeLeft--;
+                    $('#timer').text(timeLeft);
+                    
+                    if (timeLeft <= 0) {
+                        // Stop the timer
+                        clearInterval(window.otpTimerInterval);
+                        
+                        // Hide the countdown and enable the resend button
+                        $('#countdown-timer').hide();
+                        $('#resend-otp-btn').removeClass('disabled');
+                    }
+                }, 1000);
+            }
+            
+            function simulateOtpSend() {
+                // In a real application, this would be an AJAX call to your server
+                console.log('Sending OTP to: ' + $('#email').val());
+                
+                // Show a notification to the user
+                alert('An OTP has been sent to ' + $('#email').val());
             }
         });
     </script>
