@@ -579,7 +579,7 @@
                                     
                                     <div class="text-center mb-3">
                                         <div class="resend-container">
-                                            <span id="countdown-timer">Resend OTP in <span id="timer"> 120 </span> seconds</span>
+                                            <span id="countdown-timer">Resend OTP in <span id="timer">  120  </span> seconds</span>
                                             <button type="button" id="resend-otp-btn" class="btn btn-link p-0 disabled">Resend OTP</button>
                                         </div>
                                     </div>
@@ -609,7 +609,6 @@
 
     <!-- Custom JS -->
     <script src="{% static 'js/Script.js' %}"></script>
-    <script src="{% static 'js/login.js' %}"></script>
     
     <!-- Registration Form JS -->
     <script>
@@ -778,6 +777,7 @@
                 
                 // Check if OTP is complete
                 if (otpValue.length !== 6) {
+                    showToast('Please enter the complete 6-digit OTP.', 'error');
                     return;
                 }
                 
@@ -1078,7 +1078,7 @@
                 });
                 $('#otp').val(combined);
             }
-            
+
             function startOtpTimer() {
                 // Disable the resend button
                 $('#resend-otp-btn').addClass('disabled');
@@ -1116,7 +1116,65 @@
                 console.log('Sending OTP to: ' + $('#email').val());
                 
                 // Show a notification to the user
-                alert('An OTP has been sent to ' + $('#email').val());
+                showToast('An OTP has been sent to ' + $('#email').val(), 'success');
+            }
+            
+            // Add showToast function for notifications
+            function showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `toast-notification ${type}`;
+                toast.textContent = message;
+                
+                document.body.appendChild(toast);
+                
+                // Show the toast
+                setTimeout(() => {
+                    toast.classList.add('show');
+                }, 10);
+                
+                // Hide and remove the toast after 3 seconds
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        document.body.removeChild(toast);
+                    }, 300);
+                }, 3000);
+            }
+            
+            // Add CSS for toast if not already present
+            if (!document.getElementById('toast-style')) {
+                const style = document.createElement('style');
+                style.id = 'toast-style';
+                style.textContent = `
+                    .toast-notification {
+                        position: fixed;
+                        bottom: 20px;
+                        right: 20px;
+                        padding: 12px 20px;
+                        background-color: rgba(20, 20, 20, 0.9);
+                        color: white;
+                        border-radius: 4px;
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                        transform: translateY(20px);
+                        opacity: 0;
+                        transition: transform 0.3s, opacity 0.3s;
+                        z-index: 1050;
+                    }
+                    .toast-notification.show {
+                        transform: translateY(0);
+                        opacity: 1;
+                    }
+                    .toast-notification.success {
+                        border-left: 4px solid var(--accent-green, #28a745);
+                    }
+                    .toast-notification.error {
+                        border-left: 4px solid var(--accent-red, #dc3545);
+                    }
+                    .toast-notification.info {
+                        border-left: 4px solid var(--accent-blue, #0d6efd);
+                    }
+                `;
+                document.head.appendChild(style);
             }
         });
     </script>
