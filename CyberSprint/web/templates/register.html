@@ -462,15 +462,11 @@
                     // Set email in the OTP verification section
                     $('#displayEmail').text($('#email').val());
                     
-                    // Start OTP countdown timer
-                    startOtpTimer();
+                    // Send OTP to the server
+                    sendOtpToServer();
                     
                     // Move to step 6
                     moveToStep(6);
-                    
-                    // Simulate sending OTP to the server
-                    // In a real application, you would make an AJAX call to send the OTP
-                    simulateOtpSend();
                 }
             });
             
@@ -532,11 +528,8 @@
                     return;
                 }
                 
-                // In a real application, you would validate the OTP via AJAX
-                // Here we're simulating a successful verification
-                
-                // Submit the form
-                $('#registrationForm').submit();
+                // Verify OTP via AJAX
+                verifyOtpAndSubmitForm(otpValue);
             });
             
             // Resend OTP button
@@ -551,8 +544,8 @@
                     // Restart the timer
                     startOtpTimer();
                     
-                    // Simulate sending the OTP again
-                    simulateOtpSend();
+                    // Send OTP to the server
+                    sendOtpToServer();
                 }
             });
             
@@ -828,6 +821,94 @@
                     combined += $(this).val() || '';
                 });
                 $('#otp').val(combined);
+            }
+
+            // Function to send OTP to the server
+            function sendOtpToServer() {
+                const email = $('#email').val();
+                
+                $.ajax({
+                    url: '{% url "send_otp" %}',
+                    type: 'POST',
+                    data: {
+                        'email': email,
+                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            showToast('An OTP has been sent to ' + email, 'success');
+                            startOtpTimer();
+                        } else {
+                            showToast(response.message || 'Failed to send OTP. Please try again.', 'error');
+                        }
+                    },
+                    error: function() {
+                        showToast('Failed to send OTP. Please try again.', 'error');
+                    }
+                });
+            }
+            
+            // Function to verify OTP and submit form
+            function verifyOtpAndSubmitForm(otpValue) {
+                $.ajax({
+                    url: '{% url "verify_otp" %}',
+                    type: 'POST',
+                    data: {
+                        'otp': otpValue,
+                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            showToast('OTP verified successfully! Submitting registration...', 'success');
+                            // Submit form data directly instead of triggering another OTP verification
+                            submitRegistrationForm();
+                        } else {
+                            showToast(response.message || 'Invalid OTP. Please try again.', 'error');
+                        }
+                    },
+                    error: function() {
+                        showToast('Failed to verify OTP. Please try again.', 'error');
+                    }
+                });
+            }
+            
+            // Function to submit registration form data
+            function submitRegistrationForm() {
+                // Get all form data
+                const formData = {
+                    'email': $('#email').val(),
+                    'firstName': $('#firstName').val(),
+                    'lastName': $('#lastName').val(),
+                    'gender': $('input[name="gender"]:checked').val(),
+                    'mobile': $('#mobile').val(),
+                    'rollNo': $('#rollNo').val(),
+                    'year': $('#year').val(),
+                    'branch': $('#branch').val(),
+                    'githubUrl': $('#githubUrl').val(),
+                    'linkedinUrl': $('#linkedinUrl').val(),
+                    'password': $('#password').val(),
+                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                };
+                
+                $.ajax({
+                    url: '{% url "register" %}',
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            showToast('Registration successful! Redirecting to login page...', 'success');
+                            // Redirect to login page after a brief delay
+                            setTimeout(function() {
+                                window.location.href = '{% url "login" %}';
+                            }, 2000);
+                        } else {
+                            showToast(response.message || 'Registration failed. Please try again.', 'error');
+                        }
+                    },
+                    error: function() {
+                        showToast('Registration failed. Please try again.', 'error');
+                    }
+                });
             }
 
             function startOtpTimer() {
