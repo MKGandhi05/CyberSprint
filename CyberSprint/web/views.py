@@ -4,13 +4,14 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-from .models import Participant
+from .models import Participant, Team
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.mail import send_mail
 from django.conf import settings
 import json
 import random
 import string
+import uuid
 
 def index(request):
     return render(request, 'index.html')
@@ -183,6 +184,12 @@ def create_user_session(request, participant):
     request.session['user_email'] = participant.mail
     request.session['user_role'] = participant.role
     request.session['is_authenticated'] = True
+    
+    # Add team information to session if user has a team
+    if participant.team:
+        request.session['team_id'] = participant.team.team_id
+        request.session['team_name'] = participant.team.team_name
+        request.session['team_code'] = participant.team.team_code
 
 def resend_login_otp(request):
     """Resend login OTP if needed"""
@@ -383,3 +390,126 @@ def verify_otp(request):
         return JsonResponse({'status': 'success', 'message': 'OTP verified successfully'})
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid OTP'})
+
+def create_team(request):
+    """Create a new team and set the creator as the team leader"""
+    if request.method == 'POST':
+        try:
+            # Get data from request
+            data = json.loads(request.body) if request.body else request.POST
+            team_name = data.get('team_name', '').strip()
+            
+            # Validate team name
+            if not team_name:
+                return JsonResponse({'success': False, 'error': 'Team name is required'})
+            
+            # Check if user is logged in via session
+            if not request.session.get('user_id'):
+                return JsonResponse({'success': False, 'error': 'You must be logged in to create a team'})
+            
+            # Check if team name already exists
+            if Team.objects.filter(team_name__iexact=team_name).exists():
+                return JsonResponse({'success': False, 'error': 'Team name already exists'})
+            
+            # Get the participant
+            try:
+                participant = Participant.objects.get(participant_id=request.session.get('user_id'))
+            except Participant.DoesNotExist:
+                return JsonResponse({'success': False, 'error': 'User account not found'})
+            
+            # Check if participant already has a team
+            if participant.team:
+                return JsonResponse({'success': False, 'error': 'You are already a member of a team'})
+            
+            # Create the team
+            team = Team.objects.create(
+                team_name=team_name,
+                team_leader=participant
+            )
+            
+            # Update participant's team and role
+            participant.team = team
+            participant.role = 'Leader'
+            participant.save()
+            
+            # Update session data
+            request.session['user_role'] = 'Leader'
+            request.session['team_id'] = team.team_id
+            request.session['team_name'] = team.team_name
+            request.session['team_code'] = team.team_code
+            
+            return JsonResponse({
+                'success': True, 
+                'message': 'Team created successfully',
+                'team_name': team.team_name,
+                'team_code': team.team_code
+            })
+            
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    # If not a POST request
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+def join_team(request):
+    """Join an existing team using a team code"""
+    if request.method == 'POST':
+        try:
+            # Get data from request
+            data = json.loads(request.body) if request.body else request.POST
+            team_code = data.get('team_code', '').strip()
+            
+            # Validate team code
+            if not team_code:
+                return JsonResponse({'success': False, 'error': 'Team code is required'})
+            
+            # Check if user is logged in via session
+            if not request.session.get('user_id'):
+                return JsonResponse({'success': False, 'error': 'You must be logged in to join a team'})
+            
+            # Find the team by code
+            try:
+                team = Team.objects.get(team_code=team_code)
+            except Team.DoesNotExist:
+                return JsonResponse({'success': False, 'error': 'Invalid team code'})
+            
+            # Check if team is already full (max 4 members)
+            if team.team_size >= 4:
+                return JsonResponse({'success': False, 'error': 'This team is already full (maximum 4 members)'})
+            
+            # Get the participant
+            try:
+                participant = Participant.objects.get(participant_id=request.session.get('user_id'))
+            except Participant.DoesNotExist:
+                return JsonResponse({'success': False, 'error': 'User account not found'})
+            
+            # Check if participant already has a team
+            if participant.team:
+                return JsonResponse({'success': False, 'error': 'You are already a member of a team'})
+            
+            # Update participant's team and role
+            participant.team = team
+            participant.role = 'Crew'
+            participant.save()
+            
+            # Increment team size
+            team.team_size += 1
+            team.save()
+            
+            # Update session data
+            request.session['user_role'] = 'Crew'
+            request.session['team_id'] = team.team_id
+            request.session['team_name'] = team.team_name
+            request.session['team_code'] = team.team_code
+            
+            return JsonResponse({
+                'success': True, 
+                'message': 'Successfully joined team',
+                'team_name': team.team_name
+            })
+            
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    # If not a POST request
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})

@@ -25,6 +25,7 @@ class Team(models.Model):
     team_leader = models.ForeignKey('Participant', on_delete=models.SET_NULL, null=True, related_name='leading_team')
     topic = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True, blank=True)
     submission_url = models.URLField(null=True, blank=True, validators=[URLValidator()])
+    team_size = models.PositiveSmallIntegerField(default=1)
 
     def __str__(self):
         return f"{self.team_id} - {self.team_name}"
