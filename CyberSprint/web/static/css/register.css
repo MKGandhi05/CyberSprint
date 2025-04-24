@@ -1,0 +1,307 @@
+/* Mobile home icon styling */
+.home-icon-mobile {
+    color: var(--text-color);
+    font-size: 1.5rem;
+    transition: color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.home-icon-mobile:hover {
+    color: var(--accent-blue);
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Hide the regular navbar toggle and collapse menu on login page */
+.login-page .user-toggle,
+.login-page .navbar-collapse {
+    display: none !important;
+}
+
+@media (max-width: 992px) {
+    .navbar-brand img.desktop-logo {
+        height: 40px;
+    }
+}
+
+/* Multi-step form styles */
+.step-indicator {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.step {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 5px;
+    position: relative;
+    font-size: 14px;
+}
+
+.step.active {
+    background-color: var(--accent-blue);
+    color: white;
+}
+
+.step.completed {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.step:not(:last-child):after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background-color: rgba(255, 255, 255, 0.2);
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.registration-step {
+    display: none;
+}
+
+.registration-step.active {
+    display: block;
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.email-error {
+    color: var(--error-color);
+    font-size: 14px;
+    margin-top: 5px;
+    display: none;
+}
+
+/* Compact form styles to avoid scrolling */
+.login-card {
+    max-height: 90vh; /* Limit maximum height */
+}
+
+.card-body {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    overflow-y: auto; /* Only add scrollbar if absolutely necessary */
+}
+
+#step2 {
+    font-size: 0.8rem; /* Smaller font size for all elements in step 2 */
+}
+
+#step5 {
+    font-size: 0.8rem; /* Smaller font size for all elements in step 5 */
+}
+
+#step2 .mb-2 {
+    margin-bottom: 0.7rem !important; /* Reduce spacing between fields */
+}
+
+#step2 h5 {
+    margin-bottom: 10px !important; /* Reduce heading margin */
+    font-size: 1.1rem; /* Slightly reduce heading size */
+}
+
+#step2 .input-group {
+    margin-top: 3px;
+}
+
+#step2 .form-label {
+    margin-bottom: 0.1rem; /* Reduce label margin */
+}
+
+.step-indicator {
+    margin-bottom: 10px; /* Reduce space below step indicator */
+}
+
+/* Make radio buttons more compact */
+#step2 .form-check {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+/* Custom form validation styles */
+.is-invalid {
+    border-color: var(--error-color) !important;
+    box-shadow: 0 0 0 0.1rem rgba(220, 53, 69, 0.25) !important;
+}
+
+.input-group .is-invalid {
+    z-index: 0;
+}
+
+/* Only show the email already registered error */
+.email-error {
+    color: var(--error-color);
+    font-size: 14px;
+    margin-top: 5px;
+    display: none;
+}
+
+/* Password strength meter styles */
+.password-strength {
+    margin-top: 10px;
+}
+
+.strength-meter {
+    height: 4px;
+    background-color: #ddd;
+    margin: 5px 0;
+    border-radius: 2px;
+}
+
+.strength-meter-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease, background-color 0.3s ease;
+    width: 0%;
+}
+
+.strength-meter-fill.weak {
+    background-color: #f00;
+    width: 25%;
+}
+
+.strength-meter-fill.medium {
+    background-color: #ff8c00;
+    width: 50%;
+}
+
+.strength-meter-fill.good {
+    background-color: #ffcc00;
+    width: 75%;
+}
+
+.strength-meter-fill.strong {
+    background-color: #0f0;
+    width: 100%;
+}
+
+.strength-text {
+    font-size: 12px;
+    color: #888;
+}
+
+/* OTP input styles */
+.otp-input-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 0 auto;
+}
+
+.otp-input {
+    width: 40px;
+    height: 45px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+}
+
+.otp-input:focus {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    outline: none;
+}
+
+/* Resend OTP styles */
+.resend-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+#resend-otp-btn {
+    color: var(--accent-blue);
+    text-decoration: none;
+    margin-top: 5px;
+}
+
+#resend-otp-btn.disabled {
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+/* Form element styles - matching login.html */
+.form-control, .form-select {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
+    min-height: 38px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    color: var(--text-color);
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--accent-blue);
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(88, 166, 255, 0.25);
+}
+
+.input-group-text {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.input-group > .form-control, 
+.input-group > .form-select {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.input-group-text + .form-control,
+.input-group-text + .form-select {
+    border-left: 0;
+}
+
+input::placeholder,
+textarea::placeholder,
+select::placeholder,
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+input[type="password"]::placeholder,
+input[type="tel"]::placeholder,
+input[type="url"]::placeholder {
+    color: white;
+    font-size: 0.9rem;
+}
+
+/* Fix for dropdown text visibility */
+select.form-select {
+    color: white;
+}
+
+select.form-select option {
+    color: var(--text-color);
+    background-color: var(--bg-color);
+}
