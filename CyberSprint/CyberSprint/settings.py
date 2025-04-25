@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-9l5kv%b9br6*d#m5pqs45$moly--p$m)j86$m=87qy_vi#8ia2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost','127.0.0.1', '16.16.25.117' ,'www.powerpitch.co.in','powerpitch.co.in']
 
 
 # Application definition
@@ -78,9 +78,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'cybersprint',
-        'USER': 'root',
-        'PASSWORD': 'Mani@2004',
-        'HOST': 'localhost',
+        'USER': 'admin',
+        'PASSWORD': 'CyberSprint',
+        'HOST': 'cybersprint.c1moiygiciq3.eu-north-1.rds.amazonaws.com',
         'PORT': '3306',
     }
 }
@@ -119,9 +119,10 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
+STATIC_URL = 'static/'
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'web/static']  
+import os
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
