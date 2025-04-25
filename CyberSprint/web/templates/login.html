@@ -34,7 +34,7 @@
         <div class="container">
             <a class="navbar-brand" href="#">
                 <img src="{% static 'images/navBrand.png' %}" alt="CodeMania" class="desktop-logo">
-                <img src="{% static 'images/MNavbrand.png' %}" alt="CodeMania" class="mobile-logo">
+                <img src="{% static 'images/MNavBrand.png' %}" alt="CodeMania" class="mobile-logo">
             </a>
             <div class="nav-right-section">
                 <!-- Home Icon for Mobile - Direct link to home -->
@@ -154,76 +154,9 @@
                                     <div class="d-grid gap-2 mt-3 mb-2">
                                         <button type="button" id="credentials-login-btn" class="btn btn-primary">Login</button>
                                     </div>
-                                    
-                                    <div class="text-center mb-2">
-                                        <span class="divider-text">or</span>
-                                    </div>
-                                    
-                                    <div class="d-grid gap-2">
-                                        <button type="button" class="btn btn-secondary" id="switch-to-otp-btn">Login with OTP</button>
-                                    </div>
+                                                                        
                                 </div>
                                 
-                                <!-- Email OTP Section (Initially Hidden) -->
-                                <div id="email-otp-section" style="display: none;">
-                                    <div class="mb-3">
-                                        <label for="email" class="form-label">Email for OTP</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your registered email">
-                                        </div>
-                                    </div>
-                                    <div class="d-grid gap-2 mb-3">
-                                        <button type="button" class="btn btn-primary" id="send-otp-btn">Send OTP</button>
-                                    </div>
-                                    
-                                    <div class="text-center mb-3">
-                                        <span class="divider-text">or</span>
-                                    </div>
-                                    
-                                    <div class="d-grid gap-2">
-                                        <button type="button" class="btn btn-secondary" id="switch-to-password-btn">Login with Password</button>
-                                    </div>
-                                </div>
-                                
-                                <!-- OTP Verification Section (Initially Hidden) -->
-                                <div id="otp-verification-section" style="display: none;">
-                                    <div class="mb-4 text-center">
-                                        <p class="mb-1">Enter the verification code sent to</p>
-                                        <p class="user-email fw-bold"></p>
-                                    </div>
-                                    
-                                    <div class="mb-4">
-                                        <div class="otp-input-container">
-                                            <input type="text" class="otp-input" maxlength="1" data-index="1">
-                                            <input type="text" class="otp-input" maxlength="1" data-index="2">
-                                            <input type="text" class="otp-input" maxlength="1" data-index="3">
-                                            <input type="text" class="otp-input" maxlength="1" data-index="4">
-                                            <input type="text" class="otp-input" maxlength="1" data-index="5">
-                                            <input type="text" class="otp-input" maxlength="1" data-index="6">
-                                        </div>
-                                        <input type="hidden" id="otp" name="otp">
-                                    </div>
-                                    
-                                    <div class="d-grid gap-2 mb-3">
-                                        <button type="button" class="btn btn-primary" id="verify-otp-btn">Verify & Login</button>
-                                    </div>
-                                    
-                                    <div class="text-center mb-3">
-                                        <div class="resend-container">
-                                            <span id="countdown-timer">Resend OTP in <span id="timer">120</span> seconds</span>
-                                            <button type="button" id="resend-otp-btn" class="btn btn-link p-0 disabled">Resend OTP</button>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="text-center mt-4">
-                                        <span class="divider-text">or</span>
-                                    </div>
-                                    
-                                    <div class="d-grid gap-2 mt-3">
-                                        <button type="button" class="btn btn-secondary" id="switch-to-password-from-otp-btn">Login with Password</button>
-                                    </div>
-                                </div>
                             </form>
                         </div>
                         <div class="card-footer text-center">

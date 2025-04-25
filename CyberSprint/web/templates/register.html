@@ -295,53 +295,20 @@
                                     </div>
                                     <small class="form-text text-white">Password must be at least 8 characters long and include a mix of letters, numbers, and special characters.</small>
 
+                                    <div class="mb-3 text-center">
+                                        <a href="https://chat.whatsapp.com/KXqL9Vg6hOOI1IghZYLlzE" target="_blank" class="btn btn-success">
+                                            <i class="fab fa-whatsapp"></i> Join WhatsApp Group
+                                        </a>
+                                    </div>
                                     
                                     <!-- Navigation Buttons -->
                                     <div class="d-flex justify-content-between mt-3">
                                         <button type="button" id="backToStep4Btn" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</button>
-                                        <button type="button" id="goToStep6Btn" class="btn btn-primary">Get OTP <i class="fas fa-arrow-right"></i><span class="spinner-border spinner-border-sm ms-1 d-none" id="otpSpinner" role="status" aria-hidden="true"></span></button>
+                                        <button type="button" id="registerBtn" class="btn btn-primary">Register <i class="fas fa-check"></i><span class="spinner-border spinner-border-sm ms-1 d-none" id="registerSpinner" role="status" aria-hidden="true"></span></button>
                                     </div>
+
                                 </div>
-                                
-                                <!-- Step 6: OTP Verification -->
-                                <div id="step6" class="registration-step">
-                                    <h5 class="text-center mb-3">Email Verification</h5>
-                                    
-                                    <div class="mb-4 text-center">
-                                        <p class="mb-1">We've sent a verification code to</p>
-                                        <p class="user-email fw-bold" id="displayEmail"></p>
-                                        <p class="mb-1">Kindly Check Your Spam Folder</p>
-                                    </div>
-                                    
-                                    <div class="mb-4">
-                                        <div class="otp-input-container">
-                                            <input type="text" class="otp-input" maxlength="1" data-index="1">
-                                            <input type="text" class="otp-input" maxlength="1" data-index="2">
-                                            <input type="text" class="otp-input" maxlength="1" data-index="3">
-                                            <input type="text" class="otp-input" maxlength="1" data-index="4">
-                                            <input type="text" class="otp-input" maxlength="1" data-index="5">
-                                            <input type="text" class="otp-input" maxlength="1" data-index="6">
-                                        </div>
-                                        <input type="hidden" id="otp" name="otp">
-                                    </div>
-                                    
-                                    <div class="d-grid gap-2 mb-3">
-                                        <button type="button" class="btn btn-primary" id="verify-otp-btn">Verify & Register</button>
-                                    </div>
-                                    
-                                    <div class="text-center mb-3">
-                                        <div class="resend-container">
-                                            <span id="countdown-timer">Resend OTP in&nbsp;<span id="timer">120</span>&nbsp;seconds</span>
-                                            <button type="button" id="resend-otp-btn" class="btn btn-link p-0 disabled">Resend OTP</button>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Navigation Buttons -->
-                                    <div class="d-flex justify-content-between mt-3">
-                                        <button type="button" id="backToStep5Btn" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</button>
-                                    </div>
-                                </div>
-                                
+
                             </form>
                         </div>
                         <div class="card-footer text-center">
@@ -381,6 +348,7 @@
                     // Email format validation using regex
                     var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                     if (!emailRegex.test(email)) {
+                        $('#emailError').text('Please enter a valid email address.').show();
                         $('#email').addClass('is-invalid');
                         isValid = false;
                     }
@@ -457,99 +425,15 @@
                 moveToStep(4);
             });
             
-            $('#goToStep6Btn').click(function() {
+            $('#registerBtn').click(function() {
                 // Validate Step 5 fields
                 if (validateStep5()) {
-                    // Set email in the OTP verification section
-                    $('#displayEmail').text($('#email').val());
                     // Show spinner and disable button
-                    $('#otpSpinner').removeClass('d-none');
+                    $('#registerSpinner').removeClass('d-none');
                     $(this).prop('disabled', true);
                     
-                    // Send OTP to the server
-                    sendOtpToServer();
-                    
-                    // Move to step 6
-                    moveToStep(6);
-                }
-            });
-            
-            // Step 6 Navigation
-            $('#backToStep5Btn').click(function() {
-                moveToStep(5);
-            });
-            
-            // OTP Verification
-            $('.otp-input').on('input', function() {
-                let index = parseInt($(this).data('index'));
-                let value = $(this).val();
-                
-                // Move to next input if a digit is entered
-                if (value && index < 6) {
-                    $('.otp-input[data-index="' + (index + 1) + '"]').focus();
-                }
-                
-                // Combine all OTP digits into hidden input
-                combineOtpValues();
-            });
-            
-            // Handle backspace in OTP inputs
-            $('.otp-input').on('keydown', function(e) {
-                let index = parseInt($(this).data('index'));
-                
-                // On backspace, clear current input and move to previous
-                if (e.keyCode === 8 && index > 1 && $(this).val() === '') {
-                    e.preventDefault();
-                    $('.otp-input[data-index="' + (index - 1) + '"]').focus().val('');
-                }
-            });
-            
-            // Paste functionality for OTP
-            $('.otp-input').on('paste', function(e) {
-                e.preventDefault();
-                let pastedData = (e.originalEvent.clipboardData || window.clipboardData).getData('text');
-                
-                // If pasted data is a 6-digit number
-                if (/^\d{6}$/.test(pastedData)) {
-                    // Distribute the digits to individual inputs
-                    for (let i = 1; i <= 6; i++) {
-                        $('.otp-input[data-index="' + i + '"]').val(pastedData.charAt(i - 1));
-                    }
-                    
-                    // Combine all OTP digits into hidden input
-                    combineOtpValues();
-                }
-            });
-            
-            // Verify OTP button
-            $('#verify-otp-btn').click(function() {
-                // Get the combined OTP value
-                let otpValue = $('#otp').val();
-                
-                // Check if OTP is complete
-                if (otpValue.length !== 6) {
-                    showToast('Please enter the complete 6-digit OTP.', 'error');
-                    return;
-                }
-                
-                // Verify OTP via AJAX
-                verifyOtpAndSubmitForm(otpValue);
-            });
-            
-            // Resend OTP button
-            $('#resend-otp-btn').click(function() {
-                if (!$(this).hasClass('disabled')) {
-                    // Reset all OTP inputs
-                    $('.otp-input').val('');
-                    
-                    // Reset the hidden OTP input
-                    $('#otp').val('');
-                    
-                    // Restart the timer
-                    startOtpTimer();
-                    
-                    // Send OTP to the server
-                    sendOtpToServer();
+                    // Submit the registration form directly
+                    submitRegistrationForm();
                 }
             });
             
@@ -818,72 +702,6 @@
                 }
             }
             
-            // Helper functions for OTP
-            function combineOtpValues() {
-                let combined = '';
-                $('.otp-input').each(function() {
-                    combined += $(this).val() || '';
-                });
-                $('#otp').val(combined);
-            }
-
-            // Function to send OTP to the server
-            function sendOtpToServer() {
-                const email = $('#email').val();
-                
-                $.ajax({
-                    url: '{% url "send_otp" %}',
-                    type: 'POST',
-                    data: {
-                        'email': email,
-                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
-                    },
-                    success: function(response) {
-                        if (response.status === 'success') {
-                            // Now move to step 6 after successful OTP sending
-                            moveToStep(6);
-                            showToast('An OTP has been sent to ' + email, 'success');
-                            startOtpTimer();
-                        } else {
-                            // Hide spinner and re-enable button on error
-                            $('#otpSpinner').addClass('d-none');
-                            $('#goToStep6Btn').prop('disabled', false);
-                            showToast(response.message || 'Failed to send OTP. Please try again.', 'error');
-                        }
-                    },
-                    error: function() {
-                        // Hide spinner and re-enable button on error
-                        $('#otpSpinner').addClass('d-none');
-                        $('#goToStep6Btn').prop('disabled', false);
-                        showToast('Failed to send OTP. Please try again.', 'error');
-                    }
-                });
-            }
-            
-            // Function to verify OTP and submit form
-            function verifyOtpAndSubmitForm(otpValue) {
-                $.ajax({
-                    url: '{% url "verify_otp" %}',
-                    type: 'POST',
-                    data: {
-                        'otp': otpValue,
-                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
-                    },
-                    success: function(response) {
-                        if (response.status === 'success') {
-                            showToast('OTP verified successfully! Submitting registration...', 'success');
-                            // Submit form data directly instead of triggering another OTP verification
-                            submitRegistrationForm();
-                        } else {
-                            showToast(response.message || 'Invalid OTP. Please try again.', 'error');
-                        }
-                    },
-                    error: function() {
-                        showToast('Failed to verify OTP. Please try again.', 'error');
-                    }
-                });
-            }
-            
             // Function to submit registration form data
             function submitRegistrationForm() {
                 // Get all form data
@@ -907,6 +725,10 @@
                     type: 'POST',
                     data: formData,
                     success: function(response) {
+                        // Hide spinner and re-enable button
+                        $('#registerSpinner').addClass('d-none');
+                        $('#registerBtn').prop('disabled', false);
+                        
                         if (response.status === 'success') {
                             showToast('Registration successful! Redirecting to login page...', 'success');
                             // Redirect to login page after a brief delay
@@ -921,46 +743,6 @@
                         showToast('Registration failed. Please try again.', 'error');
                     }
                 });
-            }
-
-            function startOtpTimer() {
-                // Disable the resend button
-                $('#resend-otp-btn').addClass('disabled');
-                
-                // Show the countdown timer
-                $('#countdown-timer').show();
-                
-                // Set the timer to 120 seconds (2 minutes)
-                let timeLeft = 120;
-                $('#timer').text(timeLeft);
-                
-                // Clear any existing interval
-                if (window.otpTimerInterval) {
-                    clearInterval(window.otpTimerInterval);
-                }
-                
-                // Start the countdown
-                window.otpTimerInterval = setInterval(function() {
-                    timeLeft--;
-                    $('#timer').text(timeLeft);
-                    
-                    if (timeLeft <= 0) {
-                        // Stop the timer
-                        clearInterval(window.otpTimerInterval);
-                        
-                        // Hide the countdown and enable the resend button
-                        $('#countdown-timer').hide();
-                        $('#resend-otp-btn').removeClass('disabled');
-                    }
-                }, 1000);
-            }
-            
-            function simulateOtpSend() {
-                // In a real application, this would be an AJAX call to your server
-                console.log('Sending OTP to: ' + $('#email').val());
-                
-                // Show a notification to the user
-                showToast('An OTP has been sent to ' + $('#email').val(), 'success');
             }
             
             // Add showToast function for notifications

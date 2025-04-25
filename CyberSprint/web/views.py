@@ -248,13 +248,6 @@ def register(request):
         linkedin_url = request.POST.get('linkedinUrl')
         password = request.POST.get('password')
         
-        # Check if OTP is verified
-        otp_verified = request.session.get('otp_verified', False)
-        registered_email = request.session.get('registration_email', '')
-        
-        if not otp_verified or email != registered_email:
-            return JsonResponse({'status': 'error', 'message': 'Email not verified. Please verify your email first.'})
-            
         # Check if email already exists
         if Participant.objects.filter(mail=email).exists():
             return JsonResponse({'status': 'error', 'message': 'Email already registered'})
@@ -280,25 +273,7 @@ def register(request):
             )
             participant.save()
             
-            # Send welcome email with first name
-            try:
-                html_message = render_to_string('welcome_email.html', {
-                    'first_name': first_name,
-                })
-                plain_message = strip_tags(html_message)
-                send_mail(
-                    'Welcome to CodeMania!',
-                    plain_message,
-                    settings.DEFAULT_FROM_EMAIL,
-                    [email],
-                    html_message=html_message,
-                    fail_silently=False,
-                )
-            except Exception as email_error:
-                # Log the error but continue with registration
-                print(f"Error sending welcome email: {str(email_error)}")
-            
-            # Clear registration session data
+            # Clear registration session data if exists (from previous implementation)
             for key in ['registration_otp', 'registration_email', 'otp_verified']:
                 if key in request.session:
                     del request.session[key]
@@ -322,74 +297,6 @@ def check_email(request):
     
     # Return JSON response
     return JsonResponse({'exists': email_exists})
-
-@require_POST
-def send_otp(request):
-    """
-    Send OTP to user's email for verification
-    """
-    email = request.POST.get('email', '')
-    
-    # Check if OTP is already verified for this email
-    if request.session.get('otp_verified', False) and request.session.get('registration_email', '') == email:
-        return JsonResponse({
-            'status': 'success', 
-            'message': 'Email already verified. Proceed with registration.'
-        })
-    
-    # Generate OTP
-    otp = generate_otp()
-    
-    # Store OTP in session for verification later
-    request.session['registration_otp'] = otp
-    request.session['registration_email'] = email
-    request.session['otp_verified'] = False
-    
-    # Get the site URL for static files in email template
-    site_url = request.build_absolute_uri('/').rstrip('/')
-    
-    # Send OTP via email with HTML template
-    try:
-        # Render HTML message
-        html_message = render_to_string('email_otp.html', {
-            'otp': otp,
-            'site_url': site_url,
-        })
-        
-        # Create plain text version
-        plain_message = strip_tags(html_message)
-        
-        # Send the email
-        send_mail(
-            'Your CodeMania Registration OTP',
-            plain_message,
-            settings.DEFAULT_FROM_EMAIL,
-            [email],
-            html_message=html_message,
-            fail_silently=False,
-        )
-        return JsonResponse({'status': 'success', 'message': 'OTP sent successfully'})
-    except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)})
-
-@require_POST
-def verify_otp(request):
-    """
-    Verify the OTP entered by the user
-    """
-    # If already verified, no need to verify again
-    if request.session.get('otp_verified', False):
-        return JsonResponse({'status': 'success', 'message': 'OTP already verified'})
-        
-    entered_otp = request.POST.get('otp', '')
-    stored_otp = request.session.get('registration_otp', '')
-    
-    if entered_otp == stored_otp:
-        # Mark OTP as verified in session
-        request.session['otp_verified'] = True
-        return JsonResponse({'status': 'success', 'message': 'OTP verified successfully'})
-    else:
-        return JsonResponse({'status': 'error', 'message': 'Invalid OTP'})
 
 def create_team(request):
     """Create a new team and set the creator as the team leader"""
