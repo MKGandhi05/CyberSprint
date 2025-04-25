@@ -513,3 +513,75 @@ def join_team(request):
     
     # If not a POST request
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+def get_dashboard_data(request):
+    """Get dashboard data including team members for the current user"""
+    # Check if user is logged in
+    if not request.session.get('is_authenticated'):
+        return JsonResponse({'success': False, 'error': 'You must be logged in to view dashboard data'})
+    
+    # Get the user's team ID from session
+    team_id = request.session.get('team_id')
+    if not team_id:
+        return JsonResponse({
+            'success': True,
+            'has_team': False,
+            'user_info': {
+                'name': request.session.get('user_name'),
+                'email': request.session.get('user_email'),
+                'role': request.session.get('user_role')
+            }
+        })
+    
+    try:
+        # Get the current user
+        current_user = Participant.objects.get(participant_id=request.session.get('user_id'))
+        
+        # Get the team
+        team = Team.objects.get(team_id=team_id)
+        
+        # Get all team members
+        team_members = Participant.objects.filter(team=team)
+        
+        # Format the team members data
+        members_data = []
+        for member in team_members:
+            members_data.append({
+                'id': member.participant_id,
+                'name': f"{member.first_name} {member.last_name}",
+                'role': member.role,
+                'gender': member.gender.lower() if member.gender else 'male',  # Default to male if gender is not specified
+                'github_url': member.github_url,
+                'linkedin_url': member.linkedin_url,
+                'is_current_user': member.participant_id == current_user.participant_id
+            })
+        
+        # Get team info
+        team_info = {
+            'team_id': team.team_id,
+            'team_name': team.team_name,
+            'team_code': team.team_code,
+            'team_size': len(members_data),
+            'topic_selected': team.topic is not None,
+            'topic_name': team.topic.name if team.topic else None,
+            'submission_url': team.submission_url
+        }
+        
+        return JsonResponse({
+            'success': True,
+            'has_team': True,
+            'user_info': {
+                'name': request.session.get('user_name'),
+                'email': request.session.get('user_email'),
+                'role': request.session.get('user_role')
+            },
+            'team_info': team_info,
+            'team_members': members_data
+        })
+        
+    except Team.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Team not found'})
+    except Participant.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'User account not found'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})

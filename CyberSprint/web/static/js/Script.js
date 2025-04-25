@@ -114,34 +114,62 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Countdown timer
-    const hackathonDate = new Date('October 15, 2025 00:00:00').getTime();
-    
-    // Update the countdown every second
-    const countdownTimer = setInterval(function() {
-        // Get current date and time
-        const now = new Date().getTime();
+    function initCountdown() {
+        const countdownElement = document.getElementById('countdown-timer');
         
-        // Find the time difference between now and the hackathon date
-        const timeDifference = hackathonDate - now;
-        
-        // Time calculations for days, hours, minutes and seconds
-        const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
-        
-        // Display the result in the elements with corresponding IDs
-        document.getElementById('days').textContent = days < 10 ? '0' + days : days;
-        document.getElementById('hours').textContent = hours < 10 ? '0' + hours : hours;
-        document.getElementById('minutes').textContent = minutes < 10 ? '0' + minutes : minutes;
-        document.getElementById('seconds').textContent = seconds < 10 ? '0' + seconds : seconds;
-        
-        // If the countdown is finished, clear the interval and display a message
-        if (timeDifference < 0) {
-            clearInterval(countdownTimer);
-            document.getElementById('countdown-timer').innerHTML = '<div class="hackathon-live">Hackathon is LIVE!</div>';
+        // Only initialize the countdown if the element exists
+        if (countdownElement) {
+            // Force the date as explicitly as possible with year/month/day constructor
+            // NOTE: In JavaScript months are 0-indexed (0=January, 3=April)
+            const hackathonDate = new Date(2025, 3, 30, 9, 0, 0).getTime();
+            
+            console.log('Target hackathon date:', new Date(hackathonDate).toLocaleString());
+            
+            // Update the countdown every second
+            const countdownTimer = setInterval(function() {
+                // Get current date and time
+                const now = new Date().getTime();
+                console.log('Current date:', new Date(now).toLocaleString());
+                
+                // Find the time difference between now and the hackathon date
+                const timeDifference = hackathonDate - now;
+                
+                // Log the time difference in days (for debugging)
+                console.log('Days until hackathon:', timeDifference / (1000 * 60 * 60 * 24));
+                
+                // Time calculations for days, hours, minutes and seconds
+                const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+                
+                // Get the elements
+                const daysElement = document.getElementById('days');
+                const hoursElement = document.getElementById('hours');
+                const minutesElement = document.getElementById('minutes');
+                const secondsElement = document.getElementById('seconds');
+                
+                // Only update if the elements exist
+                if (daysElement) daysElement.textContent = days < 10 ? '0' + days : days;
+                if (hoursElement) hoursElement.textContent = hours < 10 ? '0' + hours : hours;
+                if (minutesElement) minutesElement.textContent = minutes < 10 ? '0' + minutes : minutes;
+                if (secondsElement) secondsElement.textContent = seconds < 10 ? '0' + seconds : seconds;
+                
+                // If the countdown is finished, clear the interval and display a message
+                if (timeDifference < 0) {
+                    clearInterval(countdownTimer);
+                    countdownElement.innerHTML = '<div class="hackathon-live">Hackathon is LIVE!</div>';
+                }
+            }, 1000);
+            
+            console.log('Countdown timer initialized');
+        } else {
+            console.log('Countdown timer element not found');
         }
-    }, 1000);
+    }
+    
+    // Initialize the countdown
+    initCountdown();
 
     // Smooth scrolling for navigation links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
