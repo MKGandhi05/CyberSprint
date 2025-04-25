@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-9l5kv%b9br6*d#m5pqs45$moly--p$m)j86$m=87qy_vi#8ia2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1', '16.16.25.117' ,'www.powerpitch.co.in','powerpitch.co.in']
+ALLOWED_HOSTS = ['localhost','127.0.0.1', '13.49.215.142' ,'www.powerpitch.co.in','powerpitch.co.in']
 
 
 # Application definition
