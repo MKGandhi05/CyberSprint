@@ -547,7 +547,7 @@
                 
                 // Password validation - at least 8 characters with letters, numbers, and special characters
                 const password = $('#password').val();
-                const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+                const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&()])[A-Za-z\d@$!%*#?&]{8,}$/;
                 
                 if (!password || !passwordRegex.test(password)) {
                     $('#password').addClass('is-invalid');
