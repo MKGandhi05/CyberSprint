@@ -245,7 +245,9 @@
                             <a href="#" class="btn btn-secondary">Learn More</a>
                         {% else %}
                             {% if request.session.user_role == None or request.session.user_role == '' %}
-                                <div class="team-creation-section mt-4" style="max-width: 600px; margin: 0 auto;">
+
+                            <h5 class="text-white mb-2" style="font-weight: normal; letter-spacing: 1px;">Either Create or join Team from below options (Register Individually)</h5>
+                            <div class="team-creation-section mt-4" style="max-width: 600px; margin: 0 auto;">
                                     <div style="margin-bottom: 20px;">
                                         <h5 class="text-white mb-2" style="font-weight: normal; letter-spacing: 1px;">TEAM NAME</h5>
                                         <div class="d-flex gap-2" style="flex-direction: row;">
