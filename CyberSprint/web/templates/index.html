@@ -241,8 +241,10 @@
                     
                     <div class="hero-buttons">
                         {% if not request.session.is_authenticated %}
-                            <a href="{% url 'register' %}" class="btn btn-primary">Register Now</a>
-                            <a href="#" class="btn btn-secondary">Learn More</a>
+                            <h3><span class="highlight" style= "color:red;">Registrations are Closed</span></h3>.
+                            <h3><span class="highlight">See you in our next events</span></h3>
+                            <h3><span class="highlight">~ Cyber Club</span></h3>
+
                         {% else %}
                             {% if request.session.user_role == None or request.session.user_role == '' %}
 
