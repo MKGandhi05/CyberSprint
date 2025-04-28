@@ -495,9 +495,10 @@
         <div class="container">
             <div class="section-header text-center mb-5">
                 <h2>Problem <span class="highlight">Statements</span></h2>
-                <p class="lead">Explore the innovative challenges for this year's competition</p>
             </div>
-            
+            <div class="theme-release-info">
+                <p>Problem statements are now available. Leaders can freeze problem statements which they like from 9 AM to 10 : 30 AM tomorrow.</p>
+            </div>    
             <!-- 3D Coverflow Style Carousel -->
             <div class="theme-coverflow-container position-relative">
                 <div class="theme-stage">
@@ -509,8 +510,17 @@
                                 <h3 class="theme-title"><span class="highlight">THEME : </span>CYBER SECURITY</h3>
                                 <div class="category-badge">Category: Security &amp; Privacy</div>
                                 <div class="theme-content">
-                                    <p>Protect digital infrastructure and personal data in an increasingly connected world.</p>
-                                    <h4>NOTE : These are not problem Statements </h4>
+                                    {% if problem_statements.CYBER_SECURITY %}
+                                        <div class="problem-statements-list">
+                                            <h4>Problem Statements:</h4>
+                                            {% for problem in problem_statements.CYBER_SECURITY %}
+                                                <div class="problem-statement-item">
+                                                    <h5>{{ problem.name }}</h5>
+                                                    <p>{{ problem.description }}</p>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -521,9 +531,17 @@
                                 <h3 class="theme-title"><span class="highlight">THEME : </span>ARTIFICIAL INTELLIGENCE</h3>
                                 <div class="category-badge">Category: AI &amp; Machine Learning</div>
                                 <div class="theme-content">
-                                    <p>Build intelligent systems that can learn, adapt, and improve over time.</p>
-                                    <h4>NOTE : These are not problem Statements </h4>
-
+                                    {% if problem_statements.ARTIFICAL_INTELLIGENCE %}
+                                        <div class="problem-statements-list">
+                                            <h4>Problem Statements:</h4>
+                                            {% for problem in problem_statements.ARTIFICAL_INTELLIGENCE %}
+                                                <div class="problem-statement-item">
+                                                    <h5>{{ problem.name }}</h5>
+                                                    <p>{{ problem.description }}</p>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -534,9 +552,17 @@
                                 <h3 class="theme-title"><span class="highlight">THEME : </span>BLOCKCHAIN TECHNOLOGY</h3>
                                 <div class="category-badge">Category: Blockchain &amp; Web3</div>
                                 <div class="theme-content">
-                                    <p>Build decentralized applications and smart contract solutions for transparent systems.</p>
-                                    <h4>NOTE : These are not problem Statements </h4>
-
+                                    {% if problem_statements.BLOCK_CHAIN_TECHNOLOGY %}
+                                        <div class="problem-statements-list">
+                                            <h4>Problem Statements:</h4>
+                                            {% for problem in problem_statements.BLOCK_CHAIN_TECHNOLOGY %}
+                                                <div class="problem-statement-item">
+                                                    <h5>{{ problem.name }}</h5>
+                                                    <p>{{ problem.description }}</p>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -547,9 +573,17 @@
                                 <h3 class="theme-title"><span class="highlight">THEME : </span>WEB TECHNOLOGY</h3>
                                 <div class="category-badge">Category: Web &amp; Cloud Computing</div>
                                 <div class="theme-content">
-                                    <p>Design and develop responsive, accessible, and innovative web applications and services.</p>
-                                <h4>NOTE : These are not problem Statements </h4>
-
+                                    {% if problem_statements.WEB_TECHNOLOGY %}
+                                        <div class="problem-statements-list">
+                                            <h4>Problem Statements:</h4>
+                                            {% for problem in problem_statements.WEB_TECHNOLOGY %}
+                                                <div class="problem-statement-item">
+                                                    <h5>{{ problem.name }}</h5>
+                                                    <p>{{ problem.description }}</p>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -560,9 +594,17 @@
                                 <h3 class="theme-title"><span class="highlight">THEME : </span>WOMEN SAFETY AND AWARENESS</h3>
                                 <div class="category-badge">Category: Social Impact &amp; Security</div>
                                 <div class="theme-content">
-                                    <p>Build applications that provide security, information, and support networks for women.</p>
-                                <h4>NOTE : These are not problem Statements </h4>
-
+                                    {% if problem_statements.WOMEN_SAFETY_AND_AWRENESS %}
+                                        <div class="problem-statements-list">
+                                            <h4>Problem Statements:</h4>
+                                            {% for problem in problem_statements.WOMEN_SAFETY_AND_AWRENESS %}
+                                                <div class="problem-statement-item">
+                                                    <h5>{{ problem.name }}</h5>
+                                                    <p>{{ problem.description }}</p>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -573,9 +615,17 @@
                                 <h3 class="theme-title"><span class="highlight">THEME : </span>EDUCATION</h3>
                                 <div class="category-badge">Category: EdTech</div>
                                 <div class="theme-content">
-                                    <p>Create accessible, engaging, and effective learning tools for diverse educational contexts.</p>
-                                <h4>NOTE : These are not problem Statements </h4>
-
+                                    {% if problem_statements.EDUCATION %}
+                                        <div class="problem-statements-list">
+                                            <h4>Problem Statements:</h4>
+                                            {% for problem in problem_statements.EDUCATION %}
+                                                <div class="problem-statement-item">
+                                                    <h5>{{ problem.name }}</h5>
+                                                    <p>{{ problem.description }}</p>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -587,8 +637,17 @@
                                 <div class="category-badge">Category: Open Innovation</div>
                                 <div class="theme-content">
                                     <p>Build projects that demonstrate innovative thinking and technical excellence.</p>
-                                    <h4>NOTE : These are not problem Statements </h4>
-
+                                    {% if problem_statements.Student_Innovation %}
+                                        <div class="problem-statements-list">
+                                            <h4>Problem Statement:</h4>
+                                            {% for problem in problem_statements.Student_Innovation %}
+                                                <div class="problem-statement-item">
+                                                    <h5>{{ problem.name }}</h5>
+                                                    <p>{{ problem.description }}</p>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -616,7 +675,7 @@
                 
             </div>
             <div class="theme-release-info">
-                <p>Problem statements will be released on 29th April 2025 @ 6 PM</p>
+                <p>Problem statements are now available. Leaders can freeze problem statements which they like from 9 AM to 13 : 30 AM tomorrow.</p>
             </div>
             <style>
             /* Theme Coverflow Styling */
@@ -632,11 +691,57 @@
             }
 
             .theme-coverflow-container {
-                height: 600px;
+                height: 650px;
                 perspective: 1000px;
                 position: relative;
                 overflow: hidden;
                 max-width: 100%;
+            }
+            
+            /* Problem Statements Styling */
+            .problem-statements-list {
+                margin-top: 15px;
+                padding: 10px;
+                background: rgba(0, 0, 0, 0.2);
+                border-radius: 8px;
+                max-height: 300px;
+                overflow-y: auto;
+            }
+            
+            /* Increase problem statement height on mobile */
+            @media (max-width: 768px) {
+                .problem-statements-list {
+                    max-height: 400px;
+                }
+            }
+            
+            @media (max-width: 576px) {
+                .problem-statements-list {
+                    max-height: 450px;
+                }
+            }
+            
+            .problem-statement-item {
+                margin-bottom: 12px;
+                padding-bottom: 12px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            .problem-statement-item:last-child {
+                border-bottom: none;
+                margin-bottom: 0;
+                padding-bottom: 0;
+            }
+            
+            .problem-statement-item h5 {
+                color: #3498db;
+                font-size: 1.1rem;
+                margin-bottom: 5px;
+            }
+            
+            .problem-statement-item p {
+                font-size: 0.95rem;
+                line-height: 1.4;
             }
 
             .theme-stage {
@@ -738,7 +843,7 @@
                 {% comment %} border-top: 1px solid rgba(255, 255, 255, 0.1); {% endcomment %}
                 {% comment %} padding-top: 15px; {% endcomment %}
                 text-align: center;
-                font-size: 14px;
+                font-size: 28px;
                 color: #2196F3;
                 font-weight: 500;
             }
@@ -805,7 +910,7 @@
                 .theme-card {
                     width: 80%;
                     left: 10%;
-                    height: 550px;
+                    height: 1000px;
                 }
                 
                 .theme-card[data-position="left"] {
@@ -826,7 +931,7 @@
                 .theme-card {
                     width: 90%;
                     left: 5%;
-                    height: 400px;
+                    height: 1000px;
                 }
                 
                 /* Reduce transform magnitude for mobile to prevent overflow */
@@ -866,8 +971,8 @@
                 }
                 
                 .theme-release-info {
-                    font-size: 12px;
-                    margin-top: -20px;
+                    font-size: 16px;
+                    margin-top: 20px;
                     padding-top: 10px;
                 }
                 
@@ -888,11 +993,11 @@
             
             @media (max-width: 480px) {
                 .theme-coverflow-container {
-                    height: 400px;
+                    height: 570px;
                 }
                 
                 .theme-card {
-                    height: 300px;
+                    height: 570px;
                 }
                 
                 .theme-card[data-position="left"], 
