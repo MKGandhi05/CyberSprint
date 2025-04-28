@@ -29,6 +29,15 @@ def index(request):
     for category in categories:
         problem_statements[category] = Topic.objects.filter(category=category)
     
+    # Check if user is logged in and part of a team
+    if request.session.get('is_authenticated') and request.session.get('team_id'):
+        # Check if the team already has a topic selected
+        try:
+            team = Team.objects.get(team_id=request.session.get('team_id'))
+            request.session['team_has_topic'] = team.topic is not None
+        except Team.DoesNotExist:
+            request.session['team_has_topic'] = False
+    
     return render(request, 'index.html', {
         'problem_statements': problem_statements,
         'categories': categories
@@ -508,5 +517,55 @@ def get_dashboard_data(request):
         return JsonResponse({'success': False, 'error': 'Team not found'})
     except Participant.DoesNotExist:
         return JsonResponse({'success': False, 'error': 'User account not found'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+@require_POST
+def freeze_topic(request):
+    """Freeze a topic for a team"""
+    # Check if user is logged in
+    if not request.session.get('is_authenticated'):
+        return JsonResponse({'success': False, 'error': 'You must be logged in to freeze a topic'})
+    
+    # Check if user is a team leader
+    if request.session.get('user_role') != 'Leader':
+        return JsonResponse({'success': False, 'error': 'Only team leaders can freeze a topic'})
+    
+    # Get the topic ID from the request
+    topic_id = request.POST.get('topic_id')
+    if not topic_id:
+        return JsonResponse({'success': False, 'error': 'No topic ID provided'})
+    
+    try:
+        # Get the team and topic
+        team = Team.objects.get(team_id=request.session.get('team_id'))
+        topic = Topic.objects.get(topic_id=topic_id)
+        
+        # Check if team already has a topic selected
+        if team.topic:
+            return JsonResponse({'success': False, 'error': 'Team already has a topic selected'})
+        
+        # Update the team with the selected topic
+        team.topic = topic
+        team.save()
+        
+        # Update the number of teams for this topic
+        topic.no_of_teams += 1
+        topic.save()
+        
+        # Update session to reflect team has selected a topic
+        request.session['team_has_topic'] = True
+        
+        return JsonResponse({
+            'success': True, 
+            'message': f'Successfully selected topic: {topic.name}',
+            'topic_name': topic.name,
+            'no_of_teams': topic.no_of_teams
+        })
+        
+    except Team.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Team not found'})
+    except Topic.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Topic not found'})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
