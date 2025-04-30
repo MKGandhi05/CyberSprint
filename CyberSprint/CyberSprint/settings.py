@@ -81,7 +81,6 @@ DATABASES = {
         'USER': 'admin',
         'PASSWORD': 'CyberSprintCyberClubMK',
         'HOST': 'cybersprint.c1moiygiciq3.eu-north-1.rds.amazonaws.com',
-        'PORT': '3306',
     }
 }
 

@@ -10,5 +10,6 @@ urlpatterns = [
     path('create-team/', views.create_team, name='create_team'),
     path('join-team/', views.join_team, name='join_team'),
     path('get-dashboard-data/', views.get_dashboard_data, name='get_dashboard_data'),
-
+    path('freeze-topic/', views.freeze_topic, name='freeze_topic'),
+    path('submit-solution/', views.submit_solution, name='submit_solution'),
 ]
