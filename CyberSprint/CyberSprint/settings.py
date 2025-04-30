@@ -78,9 +78,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'cybersprint',
-        'USER': 'root',
-        'PASSWORD': 'Mani@2004',
-        'HOST': 'localhost',
+        'USER': 'admin',
+        'PASSWORD': 'CyberSprintCyberClubMK',
+        'HOST': 'cybersprint.c1moiygiciq3.eu-north-1.rds.amazonaws.com',
         'PORT': '3306',
     }
 }
