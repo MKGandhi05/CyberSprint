@@ -229,7 +229,15 @@
                             
                             <div class="mt-3">
                                 {% if request.session.user_role == 'Leader' %}
+                                {% if request.session.team_has_topic %}
+                                {% if request.session.team_submission_done %}
+                                <span class="badge bg-success">Solution submitted</span>
+                                {% else %}
+                                <button type="button" class="btn" style="background-color: #c3d3ff; color: #333; border-radius: 4px; padding: 10px 20px; font-weight: 500;" data-bs-toggle="modal" data-bs-target="#submitSolutionModal">Submit Solution</button>
+                                {% endif %}
+                                {% else %}
                                 <a href="#problem-statements" class="btn" style="background-color: #c3d3ff; color: #333; border-radius: 4px; padding: 10px 20px; font-weight: 500;">Freeze Challenge</a>
+                                {% endif %}
                                 {% else %}
                                 <a href="#problem-statements" class="btn" style="background-color: #c3d3ff; color: #333; border-radius: 4px; padding: 10px 20px; font-weight: 500;">View Challenges</a>
                                 {% endif %}
@@ -1366,11 +1374,6 @@
         <div class="container text-center">
             <h2>Ready to <span class="highlight">Code</span> the Future?</h2>
             <p>Join hundreds of developers for 48 hours of coding, learning, and innovation</p>
-            {% if request.session.is_authenticated %}
-                <a href="#" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#dashboardModal">My Dashboard</a>
-            {% else %}
-                <a href="{% url 'register' %}" class="btn btn-primary btn-lg">Register Your Team</a>
-            {% endif %}
             <div class="countdown">
                 <div id="countdown-timer">
                     <div class="countdown-item">
@@ -1482,6 +1485,30 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Solution Modal -->
+    <div class="modal fade" id="submitSolutionModal" tabindex="-1" aria-labelledby="submitSolutionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="submitSolutionModalLabel">Submit Solution</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="submit-solution-form">
+                        <div class="mb-3">
+                            <label for="repo_url" class="form-label">GitHub Repository URL</label>
+                            <input type="url" class="form-control" id="repo_url" placeholder="https://github.com/username/repo" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="submit-solution-btn">Submit</button>
                 </div>
             </div>
         </div>
@@ -1910,6 +1937,58 @@
                 alert('An error occurred while freezing the topic: ' + error.message);
             });
         }
+    </script>
+    <script>
+        // Submit solution handler
+        document.addEventListener('DOMContentLoaded', () => {
+            const submitBtn = document.getElementById('submit-solution-btn');
+            if (submitBtn) {
+                submitBtn.addEventListener('click', () => {
+                    const repoInput = document.getElementById('repo_url');
+                    const repoUrl = repoInput.value.trim();
+                    if (!repoUrl) {
+                        if (typeof showToast === 'function') {
+                            showToast('Please enter repository URL', 'error');
+                        } else {
+                            alert('Please enter repository URL');
+                        }
+                        return;
+                    }
+                    const formData = new FormData();
+                    formData.append('repo_url', repoUrl);
+                    fetch('/submit-solution/', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            if (typeof showToast === 'function') {
+                                showToast(data.message, 'success');
+                            } else { alert(data.message); }
+                            const modalEl = document.getElementById('submitSolutionModal');
+                            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                            if (modalInstance) modalInstance.hide();
+                            setTimeout(() => { window.location.reload(); }, 1500);
+                        } else {
+                            if (typeof showToast === 'function') {
+                                showToast(data.error || 'Error submitting solution', 'error');
+                            } else { alert(data.error || 'Error'); }
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Submit solution error', err);
+                        if (typeof showToast === 'function') {
+                            showToast('Error submitting solution', 'error');
+                        } else { alert('Error submitting solution'); }
+                    });
+                });
+            }
+        });
     </script>
 </body>
 

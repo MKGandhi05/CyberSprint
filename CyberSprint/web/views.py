@@ -35,8 +35,10 @@ def index(request):
         try:
             team = Team.objects.get(team_id=request.session.get('team_id'))
             request.session['team_has_topic'] = team.topic is not None
+            request.session['team_submission_done'] = bool(team.submission_url)
         except Team.DoesNotExist:
             request.session['team_has_topic'] = False
+            request.session['team_submission_done'] = False
     
     return render(request, 'index.html', {
         'problem_statements': problem_statements,
@@ -567,5 +569,40 @@ def freeze_topic(request):
         return JsonResponse({'success': False, 'error': 'Team not found'})
     except Topic.DoesNotExist:
         return JsonResponse({'success': False, 'error': 'Topic not found'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+@require_POST
+def submit_solution(request):
+    """Submit GitHub repository URL for team solution"""
+    # Ensure user is authenticated
+    if not request.session.get('is_authenticated'):
+        return JsonResponse({'success': False, 'error': 'You must be logged in to submit a solution'})
+
+    # Ensure user is leader
+    if request.session.get('user_role') != 'Leader':
+        return JsonResponse({'success': False, 'error': 'Only team leaders can submit the solution'})
+
+    # Extract repo URL
+    repo_url = request.POST.get('repo_url', '').strip()
+    if not repo_url:
+        return JsonResponse({'success': False, 'error': 'Repository URL is required'})
+
+    try:
+        team = Team.objects.get(team_id=request.session.get('team_id'))
+
+        # Prevent duplicate submissions
+        if team.submission_url:
+            return JsonResponse({'success': False, 'error': 'Solution has already been submitted'})
+
+        team.submission_url = repo_url
+        team.save()
+
+        # Set session flag so UI can reflect submission state
+        request.session['team_submission_done'] = True
+
+        return JsonResponse({'success': True, 'message': 'Solution submitted successfully', 'submission_url': repo_url})
+    except Team.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Team not found'})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
