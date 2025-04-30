@@ -1366,11 +1366,6 @@
         <div class="container text-center">
             <h2>Ready to <span class="highlight">Code</span> the Future?</h2>
             <p>Join hundreds of developers for 48 hours of coding, learning, and innovation</p>
-            {% if request.session.is_authenticated %}
-                <a href="#" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#dashboardModal">My Dashboard</a>
-            {% else %}
-                <a href="{% url 'register' %}" class="btn btn-primary btn-lg">Register Your Team</a>
-            {% endif %}
             <div class="countdown">
                 <div id="countdown-timer">
                     <div class="countdown-item">
