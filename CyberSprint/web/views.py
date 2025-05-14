@@ -4,7 +4,7 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-from .models import Participant, Team
+from .models import Participant, Team, Topic
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.mail import send_mail
 from django.conf import settings
@@ -14,7 +14,25 @@ import string
 import uuid
 
 def index(request):
-    return render(request, 'index.html')
+    # Fetch all topics grouped by category
+    categories = [
+        'CYBER_SECURITY',
+        'ARTIFICAL_INTELLIGENCE',
+        'BLOCK_CHAIN_TECHNOLOGY',
+        'WEB_TECHNOLOGY',
+        'WOMEN_SAFETY_AND_AWRENESS',
+        'EDUCATION',
+        'Student_Innovation'
+    ]
+    
+    problem_statements = {}
+    for category in categories:
+        problem_statements[category] = Topic.objects.filter(category=category)
+    
+    return render(request, 'index.html', {
+        'problem_statements': problem_statements,
+        'categories': categories
+    })
 
 def login(request):
     if request.method == 'POST':
